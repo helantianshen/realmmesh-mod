@@ -1,0 +1,73 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+    id 'com.google.protobuf'
+}
+neoForge {
+    neoFormVersion = neoform_version
+    parchment {
+        minecraftVersion = parchment_minecraft_version
+        mappingsVersion = parchment_version
+    }
+}
+configurations {
+    commonJava { canBeResolved = false; canBeConsumed = true }
+    commonResources { canBeResolved = false; canBeConsumed = true }
+}
+artifacts {
+    commonJava(file('src/main/java'))
+    commonJava(layout.buildDirectory.dir('generated/sources/proto/main/java')) {
+        classifier = 'generated-protobuf'
+        builtBy 'generateProto'
+    }
+    commonJava(layout.buildDirectory.dir('generated/sources/proto/main/grpc')) {
+        classifier = 'generated-grpc'
+        builtBy 'generateProto'
+    }
+    commonResources(file('src/main/resources'))
+}
+
+dependencies {
+    api "com.google.protobuf:protobuf-java:${protobuf_version}"
+    api "io.grpc:grpc-protobuf:${grpc_version}"
+    api "io.grpc:grpc-stub:${grpc_version}"
+    compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir rootProject.file('proto')
+            include 'probe/v1/probe.proto'
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobuf_version}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpc_version}"
+        }
+    }
+    generateProtoTasks {
+        all().configureEach {
+            plugins {
+                grpc {}
+            }
+        }
+    }
+}
+
+tasks.register('exportProtoSources', Sync) {
+    dependsOn 'generateProto'
+    from(layout.buildDirectory.dir('generated/sources/proto/main/java')) {
+        into 'java'
+    }
+    from(layout.buildDirectory.dir('generated/sources/proto/main/grpc')) {
+        into 'grpc'
+    }
+    into rootProject.layout.projectDirectory.dir('gen')
+}
