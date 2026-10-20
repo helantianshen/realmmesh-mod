@@ -1,3 +1,6 @@
+// 运维诊断：管理员中心连通性命令
+// 在游戏线程返回固定反馈，不向玩家暴露连接配置或原始异常
+
 package io.github.helantianshen.realmmesh.neoforge.command;
 
 import io.github.helantianshen.realmmesh.RealmMesh;
@@ -34,7 +37,7 @@ public final class RealmMeshCommand {
         var server = source.getServer();
         var client = NeoForgeRpcLifecycle.clientFor(server);
         if (client == null) {
-            source.sendFailure(Component.literal("中心通信尚未就绪"));
+            source.sendFailure(Component.literal("中心通信未启用，请检查服务端连接配置与服务器凭据，修正后重启服务器"));
             return 0;
         }
         source.sendSuccess(() -> Component.literal("正在测试中心连接"), false);

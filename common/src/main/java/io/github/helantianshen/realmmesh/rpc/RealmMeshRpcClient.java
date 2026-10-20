@@ -1,3 +1,6 @@
+// 中心通信：复用带服务器凭据的 gRPC Channel，异步处理请求和关闭
+// 认证信息由启动快照提供，请求正文、凭据和原始异常不写入业务日志
+
 package io.github.helantianshen.realmmesh.rpc;
 
 import com.google.common.util.concurrent.FutureCallback;
@@ -26,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 public final class RealmMeshRpcClient implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RealmMeshRpcClient.class);
     private static final Metadata.Key<String> REQUEST_ID = Metadata.Key.of("x-request-id", Metadata.ASCII_STRING_MARSHALLER);
+    private static final Metadata.Key<String> SERVER_ID = Metadata.Key.of("x-realmmesh-server-id", Metadata.ASCII_STRING_MARSHALLER);
+    private static final Metadata.Key<String> AUTHORIZATION = Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
     private static final String ECHO_METHOD = ProbeServiceGrpc.getEchoMethod().getFullMethodName();
     private final ManagedChannel channel;
     private final ProbeServiceGrpc.ProbeServiceFutureStub stub;
@@ -37,9 +42,17 @@ public final class RealmMeshRpcClient implements AutoCloseable {
      */
     public RealmMeshRpcClient(RpcConfig config) {
         Objects.requireNonNull(config, "config");
+
+        // 凭据在实例生命周期内保持不变，拦截器为每次调用附加相同身份
+        // Metadata 创建后不再修改，独立请求的 request ID 仍由调用方法设置
+        var credentials = new Metadata();
+        credentials.put(SERVER_ID, Long.toString(config.serverId()));
+        credentials.put(AUTHORIZATION, "Bearer " + config.serverSecret());
+
         channel = ManagedChannelBuilder.forAddress(config.host(), config.port())
                 .usePlaintext()
                 .disableRetry()
+                .intercept(MetadataUtils.newAttachHeadersInterceptor(credentials))
                 .build();
         stub = ProbeServiceGrpc.newFutureStub(channel);
         timeoutMillis = config.timeoutMillis();
