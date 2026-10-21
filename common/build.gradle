@@ -41,6 +41,7 @@ sourceSets {
             include 'probe/v1/probe.proto'
             include 'auth/v1/auth.proto'
             include 'config/v1/config.proto'
+            include 'audit/v1/audit.proto'
         }
     }
 }

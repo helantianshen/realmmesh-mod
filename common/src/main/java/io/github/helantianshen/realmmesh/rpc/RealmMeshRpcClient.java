@@ -17,6 +17,10 @@ import io.grpc.stub.MetadataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import realmmesh.auth.v1.Auth;
+import realmmesh.audit.v1.Audit;
+import realmmesh.audit.v1.AuditServiceGrpc;
+import com.google.protobuf.Timestamp;
+import java.time.Instant;
 import realmmesh.config.v1.Config;
 import realmmesh.config.v1.ConfigServiceGrpc;
 import realmmesh.auth.v1.AuthServiceGrpc;
@@ -43,6 +47,7 @@ public final class RealmMeshRpcClient implements AutoCloseable {
     private final ProbeServiceGrpc.ProbeServiceFutureStub stub;
     private final AuthServiceGrpc.AuthServiceFutureStub authStub;
     private final ConfigServiceGrpc.ConfigServiceFutureStub configStub;
+    private final AuditServiceGrpc.AuditServiceFutureStub auditStub;
     private final int timeoutMillis;
 
     /**
@@ -66,6 +71,7 @@ public final class RealmMeshRpcClient implements AutoCloseable {
         stub = ProbeServiceGrpc.newFutureStub(channel);
         authStub = AuthServiceGrpc.newFutureStub(channel);
         configStub = ConfigServiceGrpc.newFutureStub(channel);
+        auditStub = AuditServiceGrpc.newFutureStub(channel);
         timeoutMillis = config.timeoutMillis();
     }
 
@@ -110,6 +116,28 @@ public final class RealmMeshRpcClient implements AutoCloseable {
                         .setOldPassword(oldPassword)
                         .setNewPassword(newPassword)
                         .build()), Function.identity());
+    }
+
+    /**
+     * 上报游戏连接事实，事件时间取自游戏服，中心另外记录接收时间
+     * 使用现有短期限和禁用重试的 Channel，失败只进入调用日志，不影响玩家流程
+     */
+    public CompletableFuture<Void> reportPlayerConnectionEvent(Audit.PlayerConnectionEventType eventType,
+            String playerName, UUID connectionId) {
+        Instant now = Instant.now();
+        // Timestamp 分别保存 Unix 秒数和单秒内纳秒，保留事件观察时刻
+        var occurredAt = Timestamp.newBuilder().setSeconds(now.getEpochSecond()).setNanos(now.getNano()).build();
+        var request = Audit.ReportPlayerConnectionEventRequest.newBuilder()
+                .setEventType(eventType)
+                .setPlayerName(playerName)
+                .setConnectionId(connectionId.toString())
+                .setOccurredAt(occurredAt)
+                .build();
+
+        return invoke(AuditServiceGrpc.getReportPlayerConnectionEventMethod().getFullMethodName(), headers -> auditStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .reportPlayerConnectionEvent(request), response -> null);
     }
 
     /** 拉取中心登录时限，拒绝零值和负数，不使用本地默认值 */
