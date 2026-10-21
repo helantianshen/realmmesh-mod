@@ -4,6 +4,7 @@
 package io.github.helantianshen.realmmesh.neoforge.rpc;
 
 import io.github.helantianshen.realmmesh.RealmMesh;
+import io.github.helantianshen.realmmesh.neoforge.auth.PlayerAuthentication;
 import io.github.helantianshen.realmmesh.config.RpcConfig;
 import io.github.helantianshen.realmmesh.neoforge.config.NeoForgeRpcConfig;
 import io.github.helantianshen.realmmesh.rpc.RealmMeshRpcClient;
@@ -80,11 +81,13 @@ public final class NeoForgeRpcLifecycle {
         return connection == null ? null : connection.client();
     }
 
-    /** 在服务器线程应用配置刷新，网络等待不会阻塞 tick */
+    /** 在服务器线程应用配置和账户通知，网络线程不直接操作玩家 */
     @SubscribeEvent
     public static void tick(ServerTickEvent.Post event) {
         var connection = CLIENTS.get(event.getServer());
-        if (connection != null) connection.tick();
+        if (connection != null) {
+            connection.tick(notification -> PlayerAuthentication.accountChanged(event.getServer(), notification));
+        }
     }
 
     /** 异常停止也会触发此事件，清理未经过正常 stopping 的连接 */

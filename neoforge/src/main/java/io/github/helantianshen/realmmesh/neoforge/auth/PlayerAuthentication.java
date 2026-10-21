@@ -20,6 +20,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import realmmesh.auth.v1.Auth;
 
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -84,6 +85,28 @@ public final class PlayerAuthentication {
     public static boolean isAuthenticated(ServerPlayer player) {
         var state = stateFor(player);
         return state != null && state.authenticated;
+    }
+
+    /**
+     * 在服务器线程处理已校验的账户通知，名字匹配不区分大小写
+     * 先撤销状态再取消请求并踢出，避免迟到的认证响应恢复这条连接
+     */
+    public static void accountChanged(MinecraftServer server, Auth.AccountEvent event) {
+        String message = switch (event.getReason()) {
+            case ACCOUNT_EVENT_REASON_PASSWORD_CHANGED -> "账户密码已变更，请重新进入并登录";
+            case ACCOUNT_EVENT_REASON_ACCOUNT_DELETED -> "账户已删除，连接已断开";
+            default -> null;
+        };
+        if (message == null) return;
+
+        // 复制在线列表，断开连接引发玩家移除时不影响本次遍历
+        var players = STATES.get(server);
+        for (var player : List.copyOf(server.getPlayerList().getPlayers())) {
+            if (!player.getGameProfile().getName().equalsIgnoreCase(event.getPlayerName())) continue;
+            var state = players == null ? null : players.remove(player);
+            cancel(state);
+            player.connection.disconnect(Component.literal(message));
+        }
     }
 
     /** 在 tick 或认证结果落地前检查期限，超时先撤销归属再断开连接 */

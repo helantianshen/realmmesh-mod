@@ -9,6 +9,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import io.github.helantianshen.realmmesh.config.RpcConfig;
 import io.grpc.ManagedChannel;
+import io.grpc.CallOptions;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.Status;
@@ -111,6 +112,14 @@ public final class RealmMeshRpcClient implements AutoCloseable {
                     }
                     return seconds;
                 });
+    }
+
+    /** 建立独立通知流，复用服务器凭据，不套用普通请求的短期限或自动重试 */
+    public AccountEventSubscription subscribeAccountEvents() {
+        var headers = new Metadata();
+        headers.put(REQUEST_ID, UUID.randomUUID().toString());
+        var call = channel.newCall(AuthServiceGrpc.getSubscribeAccountEventsMethod(), CallOptions.DEFAULT);
+        return new AccountEventSubscription(call, headers);
     }
 
     /**
