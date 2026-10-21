@@ -8,6 +8,7 @@ import io.github.helantianshen.realmmesh.neoforge.network.AuthStatePayload;
 import io.github.helantianshen.realmmesh.neoforge.rpc.NeoForgeRpcLifecycle;
 import io.github.helantianshen.realmmesh.rpc.RealmMeshRpcClient;
 import io.grpc.Status;
+import com.google.protobuf.Timestamp;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /** 按逻辑服务器和玩家对象实例区分连接，不将 UUID 作为中心账户身份 */
 @EventBusSubscriber(modid = RealmMesh.MOD_ID)
@@ -100,12 +102,9 @@ public final class PlayerAuthentication {
         if (message == null) return;
 
         // 复制在线列表，断开连接引发玩家移除时不影响本次遍历
-        var players = STATES.get(server);
         for (var player : List.copyOf(server.getPlayerList().getPlayers())) {
             if (!player.getGameProfile().getName().equalsIgnoreCase(event.getPlayerName())) continue;
-            var state = players == null ? null : players.remove(player);
-            cancel(state);
-            player.connection.disconnect(Component.literal(message));
+            disconnectAuthenticated(player, message);
         }
     }
 
@@ -218,6 +217,28 @@ public final class PlayerAuthentication {
         await(player, state, client, request, response -> applyLogin(player, state, response));
     }
 
+    /** 已登录连接自助改密，实际账户名字只从当前玩家对象取得 */
+    public static void changePassword(ServerPlayer player, String oldPassword, String newPassword) {
+        var state = stateFor(player);
+        if (state == null || !state.authenticated) {
+            reply(player, "请先完成登录后再修改密码");
+            return;
+        }
+        if (state.pending != null) {
+            reply(player, "认证请求正在处理中，请稍候");
+            return;
+        }
+
+        var client = NeoForgeRpcLifecycle.clientFor(player.getServer());
+        if (client == null) {
+            reply(player, "中心通信未启用，请联系服务器管理员");
+            return;
+        }
+        var request = client.changePassword(player.getGameProfile().getName(), oldPassword, newPassword);
+        await(player, state, client, request, response -> applyPasswordChange(player, response),
+                PlayerAuthentication::passwordChangeErrorMessage);
+    }
+
     /** 取得可提交请求的连接，已登录或已有请求时不重复调用中心 */
     private static ConnectionState ready(ServerPlayer player) {
         var state = stateFor(player);
@@ -244,6 +265,12 @@ public final class PlayerAuthentication {
      */
     private static <T> void await(ServerPlayer player, ConnectionState state, RealmMeshRpcClient client,
             CompletableFuture<T> request, Consumer<T> accept) {
+        await(player, state, client, request, accept, PlayerAuthentication::errorMessage);
+    }
+
+    /** 复用请求归属与取消处理，按操作选择安全错误文案，不捕获密码参数 */
+    private static <T> void await(ServerPlayer player, ConnectionState state, RealmMeshRpcClient client,
+            CompletableFuture<T> request, Consumer<T> accept, Function<Throwable, String> failureMessage) {
         var server = player.getServer();
         state.pending = request;
         reply(player, "正在向中心提交认证请求");
@@ -259,7 +286,7 @@ public final class PlayerAuthentication {
                 state.pending = null;
                 if (NeoForgeRpcLifecycle.clientFor(server) != client) return;
                 if (error != null) {
-                    reply(player, errorMessage(error));
+                    reply(player, failureMessage.apply(error));
                     return;
                 }
                 accept.accept(response);
@@ -321,6 +348,66 @@ public final class PlayerAuthentication {
         }
     }
 
+    /**
+     * 校验改密响应的完整字段组合，再反馈错误或撤销本次连接
+     * 成功响应不授予认证；通知若先到，await 的归属检查会丢弃迟到响应
+     */
+    private static void applyPasswordChange(ServerPlayer player, Auth.ChangePasswordResponse response) {
+        boolean noCooldown = !response.hasCooldownUntil() && response.getRetryAfterSeconds() == 0;
+        boolean valid = switch (response.getStatus()) {
+            case CHANGE_PASSWORD_STATUS_SUCCEEDED -> response.getKick() && noCooldown
+                    && response.getRemainingAttempts() > 0;
+            case CHANGE_PASSWORD_STATUS_UNREGISTERED -> response.getKick() && noCooldown
+                    && response.getRemainingAttempts() == 0;
+            case CHANGE_PASSWORD_STATUS_WRONG_PASSWORD -> !response.getKick() && noCooldown
+                    && response.getRemainingAttempts() > 0;
+            case CHANGE_PASSWORD_STATUS_COOLING_DOWN -> response.getKick()
+                    && response.getRemainingAttempts() == 0 && response.getRetryAfterSeconds() > 0
+                    && response.hasCooldownUntil() && validDeadline(response.getCooldownUntil());
+            default -> false;
+        };
+        if (!valid) {
+            reply(player, "中心改密响应无效，请联系服务器管理员");
+            return;
+        }
+
+        switch (response.getStatus()) {
+            case CHANGE_PASSWORD_STATUS_WRONG_PASSWORD ->
+                    reply(player, "旧密码错误，还可尝试 " + response.getRemainingAttempts() + " 次");
+            case CHANGE_PASSWORD_STATUS_SUCCEEDED ->
+                    disconnectAuthenticated(player, "账户密码已变更，请重新进入并登录");
+            case CHANGE_PASSWORD_STATUS_UNREGISTERED ->
+                    disconnectAuthenticated(player, "账户不存在或已删除，请重新进入服务器");
+            case CHANGE_PASSWORD_STATUS_COOLING_DOWN ->
+                    disconnectAuthenticated(player, "密码尝试过多，请在 " + response.getRetryAfterSeconds()
+                            + " 秒后重新进入服务器");
+            default -> { }
+        }
+    }
+
+    /** 撤销连接归属后取消请求并断开，广播和成功响应均不能留下已登录状态 */
+    private static void disconnectAuthenticated(ServerPlayer player, String message) {
+        var players = STATES.get(player.getServer());
+        cancel(players == null ? null : players.remove(player));
+        player.connection.disconnect(Component.literal(message));
+    }
+
+    /** 截止时间必须是合法的正数 Unix 时刻，范围与登录响应的约束一致 */
+    private static boolean validDeadline(Timestamp deadline) {
+        return deadline.getSeconds() > 0 && deadline.getSeconds() <= 253402300799L
+                && deadline.getNanos() >= 0 && deadline.getNanos() <= 999999999;
+    }
+
+    /** 改密超时不能解释为确定失败，冲突由玩家决定是否重新发起 */
+    private static String passwordChangeErrorMessage(Throwable error) {
+        return switch (Status.fromThrowable(error).getCode()) {
+            case INVALID_ARGUMENT -> "玩家名字或新密码格式不符合要求";
+            case ABORTED -> "账户状态已变化，请重新提交改密请求";
+            case UNAUTHENTICATED -> "游戏服凭据无效，请联系服务器管理员";
+            default -> "改密结果尚未确认，请勿反复提交；重新登录时确认密码，或联系服务器管理员";
+        };
+    }
+
     /** 当前游戏名字与中心原始大小写名字可以不同，但必须属于同一账户 */
     private static boolean validIdentity(ServerPlayer player, long userId, String playerName) {
         return userId > 0 && player.getGameProfile().getName().equalsIgnoreCase(playerName);
@@ -344,6 +431,7 @@ public final class PlayerAuthentication {
     /** 将状态码映射为固定提示，不显示远端错误描述或异常对象 */
     private static String errorMessage(Throwable error) {
         return switch (Status.fromThrowable(error).getCode()) {
+            case ABORTED -> "账户状态已变化，请重新提交登录请求";
             case ALREADY_EXISTS -> "玩家名字已被占用，请使用登录命令";
             case INVALID_ARGUMENT -> "玩家名字或注册密码格式不符合要求";
             case UNAUTHENTICATED -> "游戏服凭据无效，请联系服务器管理员";

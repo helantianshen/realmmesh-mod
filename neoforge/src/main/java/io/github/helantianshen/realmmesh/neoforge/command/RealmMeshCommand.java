@@ -1,4 +1,4 @@
-// 游戏命令：玩家注册登录及管理员中心连通性探测
+// 游戏命令：玩家注册、登录、自助改密及管理员中心连通性探测
 // 在游戏线程返回固定反馈，不向玩家暴露连接配置或原始异常
 
 package io.github.helantianshen.realmmesh.neoforge.command;
@@ -40,6 +40,11 @@ public final class RealmMeshCommand {
                         .then(Commands.argument("credentials", StringArgumentType.greedyString())
                                 .executes(context -> registerPlayer(context.getSource(),
                                         StringArgumentType.getString(context, "credentials")))))
+                .then(Commands.literal("password").requires(source -> source.getEntity() instanceof ServerPlayer)
+                        .executes(context -> passwordUsage(context.getSource()))
+                        .then(Commands.argument("credentials", StringArgumentType.greedyString())
+                                .executes(context -> changePassword(context.getSource(),
+                                        StringArgumentType.getString(context, "credentials")))))
                 .then(Commands.literal("login").requires(source -> source.getEntity() instanceof ServerPlayer)
                         .executes(context -> usage(context.getSource(), false))
                         .then(Commands.argument("password", StringArgumentType.greedyString())
@@ -58,6 +63,27 @@ public final class RealmMeshCommand {
         }
         PlayerAuthentication.register((ServerPlayer) source.getEntity(), parts[0]);
         return 1;
+    }
+
+    /** 只比较新密码确认，不在本地验证旧密码或累计失败次数 */
+    private static int changePassword(CommandSourceStack source, String credentials) {
+        // greedyString 保留特殊字符，参数不修剪、不转义，也不回显到用法提示
+        String[] parts = credentials.split(" ", -1);
+        if (parts.length != 3 || parts[0].isEmpty() || parts[1].isEmpty() || parts[2].isEmpty()) {
+            return passwordUsage(source);
+        }
+        if (!parts[1].equals(parts[2])) {
+            source.sendFailure(Component.literal("两次输入的新密码不一致"));
+            return 0;
+        }
+        PlayerAuthentication.changePassword((ServerPlayer) source.getEntity(), parts[0], parts[1]);
+        return 1;
+    }
+
+    /** 改密用法仅包含参数名称，不包含用户输入 */
+    private static int passwordUsage(CommandSourceStack source) {
+        source.sendFailure(Component.literal("用法：/realmmesh password <旧密码> <新密码> <确认新密码>"));
+        return 0;
     }
 
     /** 原样提交登录密码，格式错误也由中心按现有规则计数 */

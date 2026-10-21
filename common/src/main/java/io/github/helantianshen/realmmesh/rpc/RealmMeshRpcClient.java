@@ -100,6 +100,18 @@ public final class RealmMeshRpcClient implements AutoCloseable {
                 Function.identity());
     }
 
+    /** 提交当前玩家的旧密码和新密码，复用短期限且不自动重试冲突或未知结果 */
+    public CompletableFuture<Auth.ChangePasswordResponse> changePassword(String playerName, String oldPassword, String newPassword) {
+        return invoke(AuthServiceGrpc.getChangePasswordMethod().getFullMethodName(), headers -> authStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .changePassword(Auth.ChangePasswordRequest.newBuilder()
+                        .setPlayerName(playerName)
+                        .setOldPassword(oldPassword)
+                        .setNewPassword(newPassword)
+                        .build()), Function.identity());
+    }
+
     /** 拉取中心登录时限，拒绝零值和负数，不使用本地默认值 */
     public CompletableFuture<Integer> getLoginTimeoutSeconds() {
         return invoke(ConfigServiceGrpc.getGetConfigMethod().getFullMethodName(), headers -> configStub
