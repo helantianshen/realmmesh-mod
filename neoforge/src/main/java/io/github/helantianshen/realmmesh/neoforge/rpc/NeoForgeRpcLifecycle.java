@@ -15,6 +15,8 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -49,6 +51,10 @@ public final class NeoForgeRpcLifecycle {
             LOGGER.error("RealmMesh 中心通信未启用：请检查 config/realmmesh/connection.toml 的连接参数和服务器凭据，修正后重启服务器");
             return;
         }
+
+        // NeoForge 的 debug.log 默认接收 DEBUG，HTTP/2 帧日志会包含认证头及请求字节
+        // 只限制 gRPC 客户端帧记录器，保留项目的请求关联日志和传输错误日志
+        Configurator.setLevel("io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler", Level.INFO);
 
         var client = new RealmMeshRpcClient(config);
         CLIENTS.put(event.getServer(), client);

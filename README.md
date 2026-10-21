@@ -1,8 +1,10 @@
 # RealmMesh Mod
 
-面向 Minecraft 1.21.1 / NeoForge 21.1.262 的 Mod，目前提供中心连接配置、服务器凭据认证、异步 gRPC Echo 和管理员探测命令。
+面向 Minecraft 1.21.1 / NeoForge 21.1.262 的 Mod，目前提供中心连接配置、服务器凭据认证、玩家注册登录 RPC 和管理员探测命令。
 
-游戏内注册登录、玩家门禁、资产及界面功能尚未实现。当前仅支持 NeoForge；Fabric、Forge 为预留目录。
+玩家可使用 `/realmmesh register <密码> <确认密码>` 和 `/realmmesh login <密码>`。注册成功自动登录，每次重新进服均需再次登录。
+
+当前只维护连接认证状态，尚未限制未登录玩家的移动、交互或背包操作。玩家门禁、资产及界面功能尚未实现。当前仅支持 NeoForge；Fabric、Forge 为预留目录。
 
 ## 安装与配置
 

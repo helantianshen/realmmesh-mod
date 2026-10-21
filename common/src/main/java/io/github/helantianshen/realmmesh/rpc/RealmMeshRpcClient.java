@@ -4,6 +4,7 @@
 package io.github.helantianshen.realmmesh.rpc;
 
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import io.github.helantianshen.realmmesh.config.RpcConfig;
@@ -14,6 +15,8 @@ import io.grpc.Status;
 import io.grpc.stub.MetadataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import realmmesh.auth.v1.Auth;
+import realmmesh.auth.v1.AuthServiceGrpc;
 import realmmesh.probe.v1.Probe;
 import realmmesh.probe.v1.ProbeServiceGrpc;
 
@@ -21,6 +24,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * 中心通信客户端，每个实例独占并复用一个 Channel，由实例持有者负责关闭
@@ -34,6 +38,7 @@ public final class RealmMeshRpcClient implements AutoCloseable {
     private static final String ECHO_METHOD = ProbeServiceGrpc.getEchoMethod().getFullMethodName();
     private final ManagedChannel channel;
     private final ProbeServiceGrpc.ProbeServiceFutureStub stub;
+    private final AuthServiceGrpc.AuthServiceFutureStub authStub;
     private final int timeoutMillis;
 
     /**
@@ -55,6 +60,7 @@ public final class RealmMeshRpcClient implements AutoCloseable {
                 .intercept(MetadataUtils.newAttachHeadersInterceptor(credentials))
                 .build();
         stub = ProbeServiceGrpc.newFutureStub(channel);
+        authStub = AuthServiceGrpc.newFutureStub(channel);
         timeoutMillis = config.timeoutMillis();
     }
 
@@ -64,56 +70,77 @@ public final class RealmMeshRpcClient implements AutoCloseable {
      * 完成回调不保证在游戏线程执行，操作游戏状态前必须切回游戏线程
      */
     public CompletableFuture<String> echo(String message) {
+        return invoke(ECHO_METHOD, headers -> stub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .echo(Probe.EchoRequest.newBuilder().setMessage(Objects.requireNonNull(message, "message")).build()),
+                Probe.EchoResponse::getMessage);
+    }
+
+    /** 异步提交注册，密码仅用于构造本次请求，不记录或存入客户端字段 */
+    public CompletableFuture<Auth.RegisterResponse> register(String playerName, String password) {
+        return invoke(AuthServiceGrpc.getRegisterMethod().getFullMethodName(), headers -> authStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .register(Auth.RegisterRequest.newBuilder().setPlayerName(playerName).setPassword(password).build()),
+                Function.identity());
+    }
+
+    /** 异步提交登录，业务拒绝由响应状态表达，不自动重试以免重复计数 */
+    public CompletableFuture<Auth.LoginResponse> login(String playerName, String password) {
+        return invoke(AuthServiceGrpc.getLoginMethod().getFullMethodName(), headers -> authStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .login(Auth.LoginRequest.newBuilder().setPlayerName(playerName).setPassword(password).build()),
+                Function.identity());
+    }
+
+    /**
+     * 为三种调用统一记录关联日志，并将 Guava Future 适配为 CompletableFuture
+     * 每次调用独立 metadata，取消向底层传播；日志不读取消息或异常正文
+     */
+    private <R, T> CompletableFuture<T> invoke(String method,
+            Function<Metadata, ListenableFuture<R>> send, Function<R, T> decode) {
         String requestId = UUID.randomUUID().toString();
         long started = System.nanoTime();
-        LOGGER.info("event=rpc_client_start request_id={} method={}", requestId, ECHO_METHOD);
-        var result = new CompletableFuture<String>();
-        // 结果日志不依赖命令层回调，玩家离线或服务器停止也会记录 RPC 完成状态
+        LOGGER.info("event=rpc_client_start request_id={} method={}", requestId, method);
+        var result = new CompletableFuture<T>();
         result.whenComplete((value, error) -> {
             Status.Code code = error == null ? Status.Code.OK : Status.fromThrowable(error).getCode();
             if (result.isCancelled()) code = Status.Code.CANCELLED;
             else if (error instanceof NullPointerException) code = Status.Code.INVALID_ARGUMENT;
             else if (error instanceof IllegalStateException) code = Status.Code.UNAVAILABLE;
             long elapsedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
-            // 只记录固定字段与状态枚举，不传入正文、配置、metadata 或异常对象
             String format = "event=rpc_client_end request_id={} method={} status={} duration_ms={}";
-            if (code == Status.Code.OK) LOGGER.info(format, requestId, ECHO_METHOD, code, elapsedMillis);
-            else LOGGER.warn(format, requestId, ECHO_METHOD, code, elapsedMillis);
+            if (code == Status.Code.OK) LOGGER.info(format, requestId, method, code, elapsedMillis);
+            else LOGGER.warn(format, requestId, method, code, elapsedMillis);
         });
-        if (message == null) {
-            result.completeExceptionally(new NullPointerException("message"));
-            return result;
-        }
         if (channel.isShutdown()) {
             result.completeExceptionally(new IllegalStateException("RPC client is closed"));
             return result;
         }
 
-        // 每次调用独立携带 ID，不能修改共享 stub 的 metadata，以免并发请求串号
         var headers = new Metadata();
         headers.put(REQUEST_ID, requestId);
-        // 为每次调用创建独立 deadline，避免复用一个逐渐过期的截止时间
         try {
-            var call = stub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
-                    .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
-                    .echo(Probe.EchoRequest.newBuilder().setMessage(message).build());
-            // 将调用方的取消操作传递给底层 RPC，避免只取消包装结果而让网络请求继续运行
+            var call = send.apply(headers);
             result.whenComplete((value, error) -> {
-                if (result.isCancelled()) {
-                    call.cancel(false);
-                }
+                // gRPC Future 只有 cancel(true) 才会调用 ClientCall.cancel 终止网络请求
+                if (result.isCancelled()) call.cancel(true);
             });
-            // 适配生成 stub 的 Guava Future，不创建额外线程池或阻塞等待结果
-            // directExecutor 也可能执行调用方的同步完成回调，因此回调中不应执行阻塞工作
-            Futures.addCallback(call, new FutureCallback<Probe.EchoResponse>() {
+            // 直接执行器不创建线程池，回调只能转换结果，游戏操作由调用方调度
+            Futures.addCallback(call, new FutureCallback<R>() {
                 @Override
-                public void onSuccess(Probe.EchoResponse response) {
-                    result.complete(response.getMessage());
+                public void onSuccess(R response) {
+                    try {
+                        result.complete(decode.apply(response));
+                    } catch (RuntimeException error) {
+                        result.completeExceptionally(error);
+                    }
                 }
 
                 @Override
                 public void onFailure(Throwable error) {
-                    // 保留原始异常，调用方可通过 Status.fromThrowable 区分不可用与超时等状态
                     result.completeExceptionally(error);
                 }
             }, MoreExecutors.directExecutor());

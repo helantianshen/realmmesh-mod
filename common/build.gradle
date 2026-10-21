@@ -39,6 +39,7 @@ sourceSets {
         proto {
             srcDir rootProject.file('proto')
             include 'probe/v1/probe.proto'
+            include 'auth/v1/auth.proto'
         }
     }
 }

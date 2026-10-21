@@ -38,7 +38,7 @@ IntelliJ IDEA 打开仓库根目录并导入 Gradle。`gradle/gradle-daemon-jvm.
 
 ## 协议与生成
 
-`proto/` 是协议仓库的 Submodule，当前固定到 `a9daf901a4e129a4a228cd75de2b7ef7f22c9ab4`。干净检出后先恢复协议引用：
+`proto/` 是协议仓库的 Submodule，当前固定到 `5fc66879f34b3edc701f3446c75b4cbf5c0e7bb8`。干净检出后先恢复协议引用：
 
 ```bash
 git submodule update --init --recursive
@@ -50,11 +50,13 @@ Gradle 根据固定 Maven 坐标获取生成工具，无需使用系统 protoc�
 ./gradlew :common:exportProtoSources :common:compileJava :neoforge:compileJava --console=plain
 ```
 
-`common` 从 `proto/probe/v1/probe.proto` 生成 Java 消息与 gRPC stub。生成文件位于 `common/build/generated/sources/proto/main/`，由 common 与 NeoForge 编译；`commonJava` 导出包含生成任务依赖的源码目录。
+`common` 从 `proto/probe/v1/probe.proto` 和 `proto/auth/v1/auth.proto` 生成 Java 消息与 gRPC stub。生成文件位于 `common/build/generated/sources/proto/main/`，由 common 与 NeoForge 编译；`commonJava` 导出包含生成任务依赖的源码目录。
 
 `:common:exportProtoSources` 将结果同步到 `gen/java/` 与 `gen/grpc/`，这两份快照纳入 Git 供版本审查，不再次加入编译源码集。`gen/` 是专用生成目录，Sync 会删除陈旧文件，不在其中存放手写代码。更新协议后重新生成，并将 Submodule 引用和生成快照一起提交。不要手改生成代码，也不要复制 `.proto`。
 
 Java 生成包沿用协议命名空间 `realmmesh.probe.v1`，类型为 `Probe.EchoRequest`、`Probe.EchoResponse` 和 `ProbeServiceGrpc`。
+
+玩家认证生成包为 `realmmesh.auth.v1`，包含 `Auth` 消息类型及 `AuthServiceGrpc`。这些类型由共享 RPC 客户端使用，游戏线程与玩家连接状态由 NeoForge 层管理。
 
 NeoForge 使用 `grpc-netty-shaded`，通过 `additionalRuntimeClasspath` 配置 1.21.1 开发运行类路径，并通过 Jar-in-Jar 显式嵌入运行库。ModDevGradle 的 Jar-in-Jar 配置不传递解析依赖，因此 `neoforge/build.gradle` 中逐项列出 8 个 gRPC JAR、protobuf-java、proto-google-common-protos 和 perfmark-api，并使用本次验证的精确版本范围。
 
