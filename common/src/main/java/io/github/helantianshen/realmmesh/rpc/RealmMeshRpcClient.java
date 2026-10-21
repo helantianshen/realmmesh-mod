@@ -16,6 +16,8 @@ import io.grpc.stub.MetadataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import realmmesh.auth.v1.Auth;
+import realmmesh.config.v1.Config;
+import realmmesh.config.v1.ConfigServiceGrpc;
 import realmmesh.auth.v1.AuthServiceGrpc;
 import realmmesh.probe.v1.Probe;
 import realmmesh.probe.v1.ProbeServiceGrpc;
@@ -28,7 +30,7 @@ import java.util.function.Function;
 
 /**
  * 中心通信客户端，每个实例独占并复用一个 Channel，由实例持有者负责关闭
- * 请求异步执行，调用方不应在游戏线程通过 get 或 join 等待结果
+ * 运行期请求异步执行；仅启动检查允许在服务器就绪前有界等待
  */
 public final class RealmMeshRpcClient implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RealmMeshRpcClient.class);
@@ -39,6 +41,7 @@ public final class RealmMeshRpcClient implements AutoCloseable {
     private final ManagedChannel channel;
     private final ProbeServiceGrpc.ProbeServiceFutureStub stub;
     private final AuthServiceGrpc.AuthServiceFutureStub authStub;
+    private final ConfigServiceGrpc.ConfigServiceFutureStub configStub;
     private final int timeoutMillis;
 
     /**
@@ -61,6 +64,7 @@ public final class RealmMeshRpcClient implements AutoCloseable {
                 .build();
         stub = ProbeServiceGrpc.newFutureStub(channel);
         authStub = AuthServiceGrpc.newFutureStub(channel);
+        configStub = ConfigServiceGrpc.newFutureStub(channel);
         timeoutMillis = config.timeoutMillis();
     }
 
@@ -95,8 +99,22 @@ public final class RealmMeshRpcClient implements AutoCloseable {
                 Function.identity());
     }
 
+    /** 拉取中心登录时限，拒绝零值和负数，不使用本地默认值 */
+    public CompletableFuture<Integer> getLoginTimeoutSeconds() {
+        return invoke(ConfigServiceGrpc.getGetConfigMethod().getFullMethodName(), headers -> configStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .getConfig(Config.GetConfigRequest.getDefaultInstance()), response -> {
+                    int seconds = response.getLoginTimeoutSeconds();
+                    if (seconds <= 0) {
+                        throw new IllegalArgumentException("中心登录时限必须为正整数秒数");
+                    }
+                    return seconds;
+                });
+    }
+
     /**
-     * 为三种调用统一记录关联日志，并将 Guava Future 适配为 CompletableFuture
+     * 为各类调用统一记录关联日志，并将 Guava Future 适配为 CompletableFuture
      * 每次调用独立 metadata，取消向底层传播；日志不读取消息或异常正文
      */
     private <R, T> CompletableFuture<T> invoke(String method,

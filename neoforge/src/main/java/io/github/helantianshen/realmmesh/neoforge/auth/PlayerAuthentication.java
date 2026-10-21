@@ -1,24 +1,28 @@
 // 玩家认证：维护当前游戏连接的认证状态并处理中心结果
-// 全部状态和游戏操作在服务器线程执行，不实现移动或交互门禁
+// 全部状态和游戏操作在服务器线程执行，认证结果决定门禁是否解除
 
 package io.github.helantianshen.realmmesh.neoforge.auth;
 
 import io.github.helantianshen.realmmesh.RealmMesh;
+import io.github.helantianshen.realmmesh.neoforge.network.AuthStatePayload;
 import io.github.helantianshen.realmmesh.neoforge.rpc.NeoForgeRpcLifecycle;
 import io.github.helantianshen.realmmesh.rpc.RealmMeshRpcClient;
 import io.grpc.Status;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import realmmesh.auth.v1.Auth;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /** 按逻辑服务器和玩家对象实例区分连接，不将 UUID 作为中心账户身份 */
@@ -30,6 +34,15 @@ public final class PlayerAuthentication {
     private static final class ConnectionState {
         private boolean authenticated;
         private CompletableFuture<?> pending;
+        private final LoginDeadline deadline;
+        private Vec3 anchor;
+        private long nextHintNanos;
+
+        /** 只在连接建立时取一次中心时限，同时记录临时固定位置 */
+        private ConnectionState(ServerPlayer player, int timeoutSeconds) {
+            deadline = new LoginDeadline(timeoutSeconds, System.nanoTime());
+            anchor = player.position();
+        }
     }
 
     /** 仅通过服务器事件与命令调用 */
@@ -40,8 +53,13 @@ public final class PlayerAuthentication {
     public static void joined(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             var players = STATES.computeIfAbsent(player.getServer(), ignored -> new IdentityHashMap<>());
-            var previous = players.put(player, new ConnectionState());
+            int timeoutSeconds = NeoForgeRpcLifecycle.loginTimeoutSeconds(player.getServer());
+            var previous = players.put(player, new ConnectionState(player, timeoutSeconds));
             cancel(previous);
+            player.stopRiding();
+            player.stopUsingItem();
+            AuthStatePayload.send(player, false);
+            reply(player, "请在 " + timeoutSeconds + " 秒内完成登录，超时将断开连接");
             reply(player, "请使用 /realmmesh register <密码> <确认密码> 注册，或 /realmmesh login <密码> 登录");
         }
     }
@@ -68,6 +86,77 @@ public final class PlayerAuthentication {
         return state != null && state.authenticated;
     }
 
+    /** 在 tick 或认证结果落地前检查期限，超时先撤销归属再断开连接 */
+    private static boolean expire(ServerPlayer player, ConnectionState state) {
+        if (state.authenticated || !state.deadline.expired(System.nanoTime())) return false;
+        STATES.get(player.getServer()).remove(player);
+        cancel(state);
+        player.connection.disconnect(Component.literal("登录超时，请重新进入服务器后完成登录"));
+        return true;
+    }
+
+    /** 按进服时的期限检查超时，并发送最多两次剩余时间提醒 */
+    public static void tick(ServerPlayer player) {
+        var state = stateFor(player);
+        if (state == null || state.authenticated || expire(player, state)) return;
+        int remaining = state.deadline.reminder(System.nanoTime());
+        if (remaining > 0) reply(player, "请在剩余 " + remaining + " 秒内完成登录");
+    }
+
+    /** 返回本次连接的固定位置，状态尚未建立时仍不放行移动 */
+    public static Vec3 anchor(ServerPlayer player) {
+        var state = stateFor(player);
+        return state == null ? player.position() : state.anchor;
+    }
+
+    /** 操作拦截提示最多每两秒一次，不记录玩家命令或密码 */
+    public static void remindBlocked(ServerPlayer player) {
+        var state = stateFor(player);
+        if (state == null) return;
+        long now = System.nanoTime();
+        if (state.nextHintNanos != 0 && now - state.nextHintNanos < 0) return;
+        state.nextHintNanos = now + TimeUnit.SECONDS.toNanos(2);
+        reply(player, "请先使用 /realmmesh login 或 /realmmesh register 完成认证");
+    }
+
+    /** 成功结果只解除当前连接的门禁，并同步客户端界面状态 */
+    private static void authenticate(ServerPlayer player, ConnectionState state) {
+        state.authenticated = true;
+        AuthStatePayload.send(player, true);
+        player.containerMenu.sendAllDataToRemote();
+    }
+
+    /** 重生仅在仍使用同一个网络连接时迁移状态，取消旧玩家对象的在途请求 */
+    @SubscribeEvent
+    public static void cloned(PlayerEvent.Clone event) {
+        if (!(event.getOriginal() instanceof ServerPlayer original)
+                || !(event.getEntity() instanceof ServerPlayer replacement)) return;
+        var players = STATES.get(original.getServer());
+        if (players == null) return;
+        var state = players.remove(original);
+        cancel(state);
+        if (state != null && original.connection == replacement.connection) {
+            players.put(replacement, state);
+        }
+    }
+
+    /** 重生位置确定后更新位置锚点，沿用原连接截止时间而不重新计时 */
+    @SubscribeEvent
+    public static void respawned(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            var state = stateFor(player);
+            if (state != null) state.anchor = player.position();
+            AuthStatePayload.send(player, isAuthenticated(player));
+        }
+    }
+
+    /** 异常停服也清理认证状态，迟到结果无法恢复旧连接 */
+    @SubscribeEvent
+    public static void stopped(ServerStoppedEvent event) {
+        var players = STATES.remove(event.getServer());
+        if (players != null) players.values().forEach(PlayerAuthentication::cancel);
+    }
+
     /** 注册成功直接认证本次连接，不再额外发送登录请求 */
     public static void register(ServerPlayer player, String password) {
         var state = ready(player);
@@ -86,7 +175,7 @@ public final class PlayerAuthentication {
                 return;
             }
 
-            state.authenticated = true;
+            authenticate(player, state);
             reply(player, "注册成功，已登录");
         });
     }
@@ -117,6 +206,7 @@ public final class PlayerAuthentication {
             reply(player, "你已经登录");
             return null;
         }
+        if (expire(player, state)) return null;
         if (state.pending != null) {
             reply(player, "认证请求正在处理中，请稍候");
             return null;
@@ -142,6 +232,7 @@ public final class PlayerAuthentication {
                 if (stateFor(player) != state || state.pending != request
                         || server.getPlayerList().getPlayer(player.getUUID()) != player) return;
 
+                if (expire(player, state)) return;
                 state.pending = null;
                 if (NeoForgeRpcLifecycle.clientFor(server) != client) return;
                 if (error != null) {
@@ -182,7 +273,7 @@ public final class PlayerAuthentication {
                     return;
                 }
                 if (response.getStatus() == Auth.LoginStatus.LOGIN_STATUS_SUCCEEDED) {
-                    state.authenticated = true;
+                    authenticate(player, state);
                     reply(player, "登录成功");
                 } else {
                     reply(player, "密码错误，还可尝试 " + response.getRemainingAttempts() + " 次");
@@ -223,7 +314,7 @@ public final class PlayerAuthentication {
         if (state != null && state.pending != null) {
             var request = state.pending;
             state.pending = null;
-            request.cancel(false);
+            request.cancel(true);
         }
     }
 
