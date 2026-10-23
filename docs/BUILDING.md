@@ -66,12 +66,6 @@ Guava 32.1.2-jre、failureaccess 1.0.1 和 Gson 2.10.1 由 Minecraft 提供，�
 
 仓库生成包为 `realmmesh.warehouse.v1`，包含 `Warehouse` 消息类型和 `WarehouseServiceGrpc`。`realmmeshProtoDir` 只覆盖本次构建的协议输入目录，不复制协议或修改 Submodule 指针。待协议提交及消费者指针按授权更新后，才可使用默认 `proto/` 输入。
 
-仓库隔离诊断在临时 JVM 工作目录执行，不创建世界或读取日常玩家存档：
-
-```bash
-python scripts/verify-warehouse-items.py
-```
-
-脚本默认读取相邻 `../realmmesh-proto`，可通过 `REALMMESH_PROTO_DIR` 指定绝对目录。它验证真实 ItemStack/Inventory 类及纯协调状态，并将原版 NBT 样本写到 `neoforge/build/warehouse-validation/fixtures/`。该诊断不代替真实玩家联机和第三方模组验收。
+仓库隔离诊断脚本及夹具已按用户要求清理；历史验证记录不等同第三方模组验收。
 
 当前仅启用 common 与 neoforge；Fabric、Forge 为预留目录。客户端专属类不能从独立服务端加载路径引用。项目许可证尚未决定，模组元数据使用 All Rights Reserved。
