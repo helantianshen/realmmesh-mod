@@ -1,4 +1,4 @@
-// 游戏命令：玩家注册、登录、自助改密及管理员中心连通性探测
+// 游戏命令：玩家认证、仓库操作及管理员中心连通性探测
 // 在游戏线程返回固定反馈，不向玩家暴露连接配置或原始异常
 
 package io.github.helantianshen.realmmesh.neoforge.command;
@@ -28,11 +28,12 @@ public final class RealmMeshCommand {
     /** 命令通过事件注册，不创建实例 */
     private RealmMeshCommand() {}
 
-    /** 注册管理员探测和普通玩家认证命令 */
+    /** 注册管理员探测、普通玩家认证和仓库命令 */
     @SubscribeEvent
     public static void register(RegisterCommandsEvent event) {
         // 玩家认证只限制实际玩家，管理员权限单独约束 ping 子命令
         event.getDispatcher().register(Commands.literal("realmmesh")
+                .then(WarehouseCommand.tree())
                 .then(Commands.literal("ping").requires(source -> source.hasPermission(2))
                         .executes(context -> ping(context.getSource())))
                 .then(Commands.literal("register").requires(source -> source.getEntity() instanceof ServerPlayer)

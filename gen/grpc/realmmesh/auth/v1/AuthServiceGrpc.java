@@ -81,6 +81,68 @@ public final class AuthServiceGrpc {
     return getLoginMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<realmmesh.auth.v1.Auth.ChangePasswordRequest,
+      realmmesh.auth.v1.Auth.ChangePasswordResponse> getChangePasswordMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ChangePassword",
+      requestType = realmmesh.auth.v1.Auth.ChangePasswordRequest.class,
+      responseType = realmmesh.auth.v1.Auth.ChangePasswordResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<realmmesh.auth.v1.Auth.ChangePasswordRequest,
+      realmmesh.auth.v1.Auth.ChangePasswordResponse> getChangePasswordMethod() {
+    io.grpc.MethodDescriptor<realmmesh.auth.v1.Auth.ChangePasswordRequest, realmmesh.auth.v1.Auth.ChangePasswordResponse> getChangePasswordMethod;
+    if ((getChangePasswordMethod = AuthServiceGrpc.getChangePasswordMethod) == null) {
+      synchronized (AuthServiceGrpc.class) {
+        if ((getChangePasswordMethod = AuthServiceGrpc.getChangePasswordMethod) == null) {
+          AuthServiceGrpc.getChangePasswordMethod = getChangePasswordMethod =
+              io.grpc.MethodDescriptor.<realmmesh.auth.v1.Auth.ChangePasswordRequest, realmmesh.auth.v1.Auth.ChangePasswordResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ChangePassword"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  realmmesh.auth.v1.Auth.ChangePasswordRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  realmmesh.auth.v1.Auth.ChangePasswordResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AuthServiceMethodDescriptorSupplier("ChangePassword"))
+              .build();
+        }
+      }
+    }
+    return getChangePasswordMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest,
+      realmmesh.auth.v1.Auth.AccountEvent> getSubscribeAccountEventsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SubscribeAccountEvents",
+      requestType = realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.class,
+      responseType = realmmesh.auth.v1.Auth.AccountEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest,
+      realmmesh.auth.v1.Auth.AccountEvent> getSubscribeAccountEventsMethod() {
+    io.grpc.MethodDescriptor<realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest, realmmesh.auth.v1.Auth.AccountEvent> getSubscribeAccountEventsMethod;
+    if ((getSubscribeAccountEventsMethod = AuthServiceGrpc.getSubscribeAccountEventsMethod) == null) {
+      synchronized (AuthServiceGrpc.class) {
+        if ((getSubscribeAccountEventsMethod = AuthServiceGrpc.getSubscribeAccountEventsMethod) == null) {
+          AuthServiceGrpc.getSubscribeAccountEventsMethod = getSubscribeAccountEventsMethod =
+              io.grpc.MethodDescriptor.<realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest, realmmesh.auth.v1.Auth.AccountEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SubscribeAccountEvents"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  realmmesh.auth.v1.Auth.AccountEvent.getDefaultInstance()))
+              .setSchemaDescriptor(new AuthServiceMethodDescriptorSupplier("SubscribeAccountEvents"))
+              .build();
+        }
+      }
+    }
+    return getSubscribeAccountEventsMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -154,6 +216,28 @@ public final class AuthServiceGrpc {
         io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.LoginResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getLoginMethod(), responseObserver);
     }
+
+    /**
+     * <pre>
+     * ChangePassword 验证旧密码后修改密码，与登录共用失败次数和休息期
+     * 仅允许已登录连接发起；提交成功后广播变更，发起连接也须清除认证并退出
+     * </pre>
+     */
+    default void changePassword(realmmesh.auth.v1.Auth.ChangePasswordRequest request,
+        io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.ChangePasswordResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getChangePasswordMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * SubscribeAccountEvents 订阅中心提交成功后的账户变更，仅推送在线通知
+     * 建流及每次发送均校验服务器凭据，断线期间的事件不保存、不补发
+     * </pre>
+     */
+    default void subscribeAccountEvents(realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest request,
+        io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.AccountEvent> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSubscribeAccountEventsMethod(), responseObserver);
+    }
   }
 
   /**
@@ -214,6 +298,30 @@ public final class AuthServiceGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getLoginMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * ChangePassword 验证旧密码后修改密码，与登录共用失败次数和休息期
+     * 仅允许已登录连接发起；提交成功后广播变更，发起连接也须清除认证并退出
+     * </pre>
+     */
+    public void changePassword(realmmesh.auth.v1.Auth.ChangePasswordRequest request,
+        io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.ChangePasswordResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getChangePasswordMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * SubscribeAccountEvents 订阅中心提交成功后的账户变更，仅推送在线通知
+     * 建流及每次发送均校验服务器凭据，断线期间的事件不保存、不补发
+     * </pre>
+     */
+    public void subscribeAccountEvents(realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest request,
+        io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.AccountEvent> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
+          getChannel().newCall(getSubscribeAccountEventsMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -256,6 +364,29 @@ public final class AuthServiceGrpc {
     public realmmesh.auth.v1.Auth.LoginResponse login(realmmesh.auth.v1.Auth.LoginRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getLoginMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * ChangePassword 验证旧密码后修改密码，与登录共用失败次数和休息期
+     * 仅允许已登录连接发起；提交成功后广播变更，发起连接也须清除认证并退出
+     * </pre>
+     */
+    public realmmesh.auth.v1.Auth.ChangePasswordResponse changePassword(realmmesh.auth.v1.Auth.ChangePasswordRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getChangePasswordMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * SubscribeAccountEvents 订阅中心提交成功后的账户变更，仅推送在线通知
+     * 建流及每次发送均校验服务器凭据，断线期间的事件不保存、不补发
+     * </pre>
+     */
+    public java.util.Iterator<realmmesh.auth.v1.Auth.AccountEvent> subscribeAccountEvents(
+        realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
+          getChannel(), getSubscribeAccountEventsMethod(), getCallOptions(), request);
     }
   }
 
@@ -302,10 +433,24 @@ public final class AuthServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getLoginMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * ChangePassword 验证旧密码后修改密码，与登录共用失败次数和休息期
+     * 仅允许已登录连接发起；提交成功后广播变更，发起连接也须清除认证并退出
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<realmmesh.auth.v1.Auth.ChangePasswordResponse> changePassword(
+        realmmesh.auth.v1.Auth.ChangePasswordRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getChangePasswordMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_REGISTER = 0;
   private static final int METHODID_LOGIN = 1;
+  private static final int METHODID_CHANGE_PASSWORD = 2;
+  private static final int METHODID_SUBSCRIBE_ACCOUNT_EVENTS = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -331,6 +476,14 @@ public final class AuthServiceGrpc {
         case METHODID_LOGIN:
           serviceImpl.login((realmmesh.auth.v1.Auth.LoginRequest) request,
               (io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.LoginResponse>) responseObserver);
+          break;
+        case METHODID_CHANGE_PASSWORD:
+          serviceImpl.changePassword((realmmesh.auth.v1.Auth.ChangePasswordRequest) request,
+              (io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.ChangePasswordResponse>) responseObserver);
+          break;
+        case METHODID_SUBSCRIBE_ACCOUNT_EVENTS:
+          serviceImpl.subscribeAccountEvents((realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest) request,
+              (io.grpc.stub.StreamObserver<realmmesh.auth.v1.Auth.AccountEvent>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -364,6 +517,20 @@ public final class AuthServiceGrpc {
               realmmesh.auth.v1.Auth.LoginRequest,
               realmmesh.auth.v1.Auth.LoginResponse>(
                 service, METHODID_LOGIN)))
+        .addMethod(
+          getChangePasswordMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              realmmesh.auth.v1.Auth.ChangePasswordRequest,
+              realmmesh.auth.v1.Auth.ChangePasswordResponse>(
+                service, METHODID_CHANGE_PASSWORD)))
+        .addMethod(
+          getSubscribeAccountEventsMethod(),
+          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+            new MethodHandlers<
+              realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest,
+              realmmesh.auth.v1.Auth.AccountEvent>(
+                service, METHODID_SUBSCRIBE_ACCOUNT_EVENTS)))
         .build();
   }
 
@@ -414,6 +581,8 @@ public final class AuthServiceGrpc {
               .setSchemaDescriptor(new AuthServiceFileDescriptorSupplier())
               .addMethod(getRegisterMethod())
               .addMethod(getLoginMethod())
+              .addMethod(getChangePasswordMethod())
+              .addMethod(getSubscribeAccountEventsMethod())
               .build();
         }
       }

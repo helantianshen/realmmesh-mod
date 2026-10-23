@@ -24,6 +24,8 @@ import java.time.Instant;
 import realmmesh.config.v1.Config;
 import realmmesh.config.v1.ConfigServiceGrpc;
 import realmmesh.auth.v1.AuthServiceGrpc;
+import realmmesh.warehouse.v1.Warehouse;
+import realmmesh.warehouse.v1.WarehouseServiceGrpc;
 import realmmesh.probe.v1.Probe;
 import realmmesh.probe.v1.ProbeServiceGrpc;
 
@@ -49,6 +51,8 @@ public final class RealmMeshRpcClient implements AutoCloseable {
     private final ConfigServiceGrpc.ConfigServiceFutureStub configStub;
     private final AuditServiceGrpc.AuditServiceFutureStub auditStub;
     private final int timeoutMillis;
+    private final long serverId;
+    private final WarehouseServiceGrpc.WarehouseServiceFutureStub warehouseStub;
 
     /**
      * 从配置快照创建客户端，创建成功不代表中心已经连接或可用
@@ -73,6 +77,8 @@ public final class RealmMeshRpcClient implements AutoCloseable {
         configStub = ConfigServiceGrpc.newFutureStub(channel);
         auditStub = AuditServiceGrpc.newFutureStub(channel);
         timeoutMillis = config.timeoutMillis();
+        serverId = config.serverId();
+        warehouseStub = WarehouseServiceGrpc.newFutureStub(channel);
     }
 
     /**
@@ -152,6 +158,59 @@ public final class RealmMeshRpcClient implements AutoCloseable {
                     }
                     return seconds;
                 });
+    }
+
+    /** 返回用于资产日志关联的服务器 ID，不暴露凭据 */
+    public long serverId() {
+        return serverId;
+    }
+
+    /** 查询当前账户的仓库摘要，游标由调用方显式传入 */
+    public CompletableFuture<Warehouse.ListItemsResponse> listWarehouseItems(Warehouse.ListItemsRequest request) {
+        return invoke(WarehouseServiceGrpc.getListItemsMethod().getFullMethodName(), headers -> warehouseStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .listItems(request), Function.identity());
+    }
+
+    /** 提交已在游戏服暂扣的物品，不自动重试未知结果 */
+    public CompletableFuture<Warehouse.Operation> depositWarehouse(Warehouse.DepositRequest request) {
+        return invoke(WarehouseServiceGrpc.getDepositMethod().getFullMethodName(), headers -> warehouseStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .deposit(request), Function.identity());
+    }
+
+    /** 取得取出预检查载荷，此调用不允许游戏服发放物品 */
+    public CompletableFuture<Warehouse.PrepareWithdrawalResponse> prepareWithdrawal(Warehouse.WithdrawalRequest request) {
+        return invoke(WarehouseServiceGrpc.getPrepareWithdrawalMethod().getFullMethodName(), headers -> warehouseStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .prepareWithdrawal(request), Function.identity());
+    }
+
+    /** 通知中心准备完毕，只有扣库成功响应才允许发放 */
+    public CompletableFuture<Warehouse.Operation> commitWithdrawal(Warehouse.CommitWithdrawalRequest request) {
+        return invoke(WarehouseServiceGrpc.getCommitWithdrawalMethod().getFullMethodName(), headers -> warehouseStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .commitWithdrawal(request), Function.identity());
+    }
+
+    /** 报告确定的发放结果，超时不能伪造未发放结论 */
+    public CompletableFuture<Warehouse.Operation> completeWithdrawal(Warehouse.CompleteWithdrawalRequest request) {
+        return invoke(WarehouseServiceGrpc.getCompleteWithdrawalMethod().getFullMethodName(), headers -> warehouseStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .completeWithdrawal(request), Function.identity());
+    }
+
+    /** 只查询原操作结果，不触发物品发放或归还 */
+    public CompletableFuture<Warehouse.Operation> getWarehouseOperation(Warehouse.GetOperationRequest request) {
+        return invoke(WarehouseServiceGrpc.getGetOperationMethod().getFullMethodName(), headers -> warehouseStub
+                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers))
+                .withDeadlineAfter(timeoutMillis, TimeUnit.MILLISECONDS)
+                .getOperation(request), Function.identity());
     }
 
     /** 建立独立通知流，复用服务器凭据，不套用普通请求的短期限或自动重试 */

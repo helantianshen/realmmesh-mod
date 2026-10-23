@@ -28,6 +28,161 @@ public final class Auth extends com.google.protobuf.GeneratedFile {
   }
   /**
    * <pre>
+   * AccountEventReason 决定游戏服向被踢出玩家显示的原因
+   * 零值和未知值不是有效通知，接收方不得据此执行踢出
+   * </pre>
+   *
+   * Protobuf enum {@code realmmesh.auth.v1.AccountEventReason}
+   */
+  public enum AccountEventReason
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <pre>
+     * 未指定原因，中心不得作为正常事件发送
+     * </pre>
+     *
+     * <code>ACCOUNT_EVENT_REASON_UNSPECIFIED = 0;</code>
+     */
+    ACCOUNT_EVENT_REASON_UNSPECIFIED(0),
+    /**
+     * <pre>
+     * 密码已变更，在线玩家需要重新登录
+     * </pre>
+     *
+     * <code>ACCOUNT_EVENT_REASON_PASSWORD_CHANGED = 1;</code>
+     */
+    ACCOUNT_EVENT_REASON_PASSWORD_CHANGED(1),
+    /**
+     * <pre>
+     * 账户已逻辑删除，在线玩家需要断开连接
+     * </pre>
+     *
+     * <code>ACCOUNT_EVENT_REASON_ACCOUNT_DELETED = 2;</code>
+     */
+    ACCOUNT_EVENT_REASON_ACCOUNT_DELETED(2),
+    UNRECOGNIZED(-1),
+    ;
+
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 36,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "AccountEventReason");
+    }
+    /**
+     * <pre>
+     * 未指定原因，中心不得作为正常事件发送
+     * </pre>
+     *
+     * <code>ACCOUNT_EVENT_REASON_UNSPECIFIED = 0;</code>
+     */
+    public static final int ACCOUNT_EVENT_REASON_UNSPECIFIED_VALUE = 0;
+    /**
+     * <pre>
+     * 密码已变更，在线玩家需要重新登录
+     * </pre>
+     *
+     * <code>ACCOUNT_EVENT_REASON_PASSWORD_CHANGED = 1;</code>
+     */
+    public static final int ACCOUNT_EVENT_REASON_PASSWORD_CHANGED_VALUE = 1;
+    /**
+     * <pre>
+     * 账户已逻辑删除，在线玩家需要断开连接
+     * </pre>
+     *
+     * <code>ACCOUNT_EVENT_REASON_ACCOUNT_DELETED = 2;</code>
+     */
+    public static final int ACCOUNT_EVENT_REASON_ACCOUNT_DELETED_VALUE = 2;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static AccountEventReason valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static AccountEventReason forNumber(int value) {
+      switch (value) {
+        case 0: return ACCOUNT_EVENT_REASON_UNSPECIFIED;
+        case 1: return ACCOUNT_EVENT_REASON_PASSWORD_CHANGED;
+        case 2: return ACCOUNT_EVENT_REASON_ACCOUNT_DELETED;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<AccountEventReason>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        AccountEventReason> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<AccountEventReason>() {
+            public AccountEventReason findValueByNumber(int number) {
+              return AccountEventReason.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValue(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return realmmesh.auth.v1.Auth.getDescriptor().getEnumType(0);
+    }
+
+    private static final AccountEventReason[] VALUES = values();
+
+    public static AccountEventReason valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private AccountEventReason(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:realmmesh.auth.v1.AccountEventReason)
+  }
+
+  /**
+   * <pre>
    * LoginStatus 区分认证结果，零值与无法识别的值均不得视作登录成功
    * </pre>
    *
@@ -188,7 +343,7 @@ public final class Auth extends com.google.protobuf.GeneratedFile {
     }
     public static com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return realmmesh.auth.v1.Auth.getDescriptor().getEnumType(0);
+      return realmmesh.auth.v1.Auth.getDescriptor().getEnumType(1);
     }
 
     private static final LoginStatus[] VALUES = values();
@@ -212,6 +367,1264 @@ public final class Auth extends com.google.protobuf.GeneratedFile {
     }
 
     // @@protoc_insertion_point(enum_scope:realmmesh.auth.v1.LoginStatus)
+  }
+
+  /**
+   * <pre>
+   * ChangePasswordStatus 区分改密业务结果，零值和未知值均不能视作成功
+   * </pre>
+   *
+   * Protobuf enum {@code realmmesh.auth.v1.ChangePasswordStatus}
+   */
+  public enum ChangePasswordStatus
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <pre>
+     * 未指定结果，中心不得作为正常业务结果发送
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_UNSPECIFIED = 0;</code>
+     */
+    CHANGE_PASSWORD_STATUS_UNSPECIFIED(0),
+    /**
+     * <pre>
+     * 新密码及失败次数清零已提交，需要退出后重新登录
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_SUCCEEDED = 1;</code>
+     */
+    CHANGE_PASSWORD_STATUS_SUCCEEDED(1),
+    /**
+     * <pre>
+     * 账户不存在或已删除，不计数，清除本地认证并退出
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_UNREGISTERED = 2;</code>
+     */
+    CHANGE_PASSWORD_STATUS_UNREGISTERED(2),
+    /**
+     * <pre>
+     * 旧密码错误但未达到共享阈值，仍可尝试
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_WRONG_PASSWORD = 3;</code>
+     */
+    CHANGE_PASSWORD_STATUS_WRONG_PASSWORD(3),
+    /**
+     * <pre>
+     * 已进入或仍处于共享休息期，本次连接需要被踢出
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_COOLING_DOWN = 4;</code>
+     */
+    CHANGE_PASSWORD_STATUS_COOLING_DOWN(4),
+    UNRECOGNIZED(-1),
+    ;
+
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 36,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "ChangePasswordStatus");
+    }
+    /**
+     * <pre>
+     * 未指定结果，中心不得作为正常业务结果发送
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_UNSPECIFIED = 0;</code>
+     */
+    public static final int CHANGE_PASSWORD_STATUS_UNSPECIFIED_VALUE = 0;
+    /**
+     * <pre>
+     * 新密码及失败次数清零已提交，需要退出后重新登录
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_SUCCEEDED = 1;</code>
+     */
+    public static final int CHANGE_PASSWORD_STATUS_SUCCEEDED_VALUE = 1;
+    /**
+     * <pre>
+     * 账户不存在或已删除，不计数，清除本地认证并退出
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_UNREGISTERED = 2;</code>
+     */
+    public static final int CHANGE_PASSWORD_STATUS_UNREGISTERED_VALUE = 2;
+    /**
+     * <pre>
+     * 旧密码错误但未达到共享阈值，仍可尝试
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_WRONG_PASSWORD = 3;</code>
+     */
+    public static final int CHANGE_PASSWORD_STATUS_WRONG_PASSWORD_VALUE = 3;
+    /**
+     * <pre>
+     * 已进入或仍处于共享休息期，本次连接需要被踢出
+     * </pre>
+     *
+     * <code>CHANGE_PASSWORD_STATUS_COOLING_DOWN = 4;</code>
+     */
+    public static final int CHANGE_PASSWORD_STATUS_COOLING_DOWN_VALUE = 4;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ChangePasswordStatus valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static ChangePasswordStatus forNumber(int value) {
+      switch (value) {
+        case 0: return CHANGE_PASSWORD_STATUS_UNSPECIFIED;
+        case 1: return CHANGE_PASSWORD_STATUS_SUCCEEDED;
+        case 2: return CHANGE_PASSWORD_STATUS_UNREGISTERED;
+        case 3: return CHANGE_PASSWORD_STATUS_WRONG_PASSWORD;
+        case 4: return CHANGE_PASSWORD_STATUS_COOLING_DOWN;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ChangePasswordStatus>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        ChangePasswordStatus> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ChangePasswordStatus>() {
+            public ChangePasswordStatus findValueByNumber(int number) {
+              return ChangePasswordStatus.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValue(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return realmmesh.auth.v1.Auth.getDescriptor().getEnumType(2);
+    }
+
+    private static final ChangePasswordStatus[] VALUES = values();
+
+    public static ChangePasswordStatus valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private ChangePasswordStatus(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:realmmesh.auth.v1.ChangePasswordStatus)
+  }
+
+  public interface SubscribeAccountEventsRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:realmmesh.auth.v1.SubscribeAccountEventsRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * SubscribeAccountEventsRequest 订阅全部账户变更，不接受玩家或服务器筛选
+   * 服务器身份来自 metadata，不传递游标、历史事件编号或玩家在线列表
+   * </pre>
+   *
+   * Protobuf type {@code realmmesh.auth.v1.SubscribeAccountEventsRequest}
+   */
+  public static final class SubscribeAccountEventsRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:realmmesh.auth.v1.SubscribeAccountEventsRequest)
+      SubscribeAccountEventsRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 36,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "SubscribeAccountEventsRequest");
+    }
+    // Use SubscribeAccountEventsRequest.newBuilder() to construct.
+    private SubscribeAccountEventsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private SubscribeAccountEventsRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.class, realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest)) {
+        return super.equals(obj);
+      }
+      realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest other = (realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * SubscribeAccountEventsRequest 订阅全部账户变更，不接受玩家或服务器筛选
+     * 服务器身份来自 metadata，不传递游标、历史事件编号或玩家在线列表
+     * </pre>
+     *
+     * Protobuf type {@code realmmesh.auth.v1.SubscribeAccountEventsRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:realmmesh.auth.v1.SubscribeAccountEventsRequest)
+        realmmesh.auth.v1.Auth.SubscribeAccountEventsRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.class, realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.Builder.class);
+      }
+
+      // Construct using realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest getDefaultInstanceForType() {
+        return realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest build() {
+        realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest buildPartial() {
+        realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest result = new realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest) {
+          return mergeFrom((realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest other) {
+        if (other == realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        java.util.Objects.requireNonNull(extensionRegistry);
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:realmmesh.auth.v1.SubscribeAccountEventsRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:realmmesh.auth.v1.SubscribeAccountEventsRequest)
+    private static final realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest();
+    }
+
+    public static realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SubscribeAccountEventsRequest>
+        PARSER = new com.google.protobuf.AbstractParser<SubscribeAccountEventsRequest>() {
+      @java.lang.Override
+      public SubscribeAccountEventsRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<SubscribeAccountEventsRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SubscribeAccountEventsRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public realmmesh.auth.v1.Auth.SubscribeAccountEventsRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface AccountEventOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:realmmesh.auth.v1.AccountEvent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The playerName.
+     */
+    java.lang.String getPlayerName();
+    /**
+     * <pre>
+     * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The bytes for playerName.
+     */
+    com.google.protobuf.ByteString
+        getPlayerNameBytes();
+
+    /**
+     * <pre>
+     * 已提交的账户变更原因，不用于撤销 HTTP JWT
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+     * @return The enum numeric value on the wire for reason.
+     */
+    int getReasonValue();
+    /**
+     * <pre>
+     * 已提交的账户变更原因，不用于撤销 HTTP JWT
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+     * @return The reason.
+     */
+    realmmesh.auth.v1.Auth.AccountEventReason getReason();
+  }
+  /**
+   * <pre>
+   * AccountEvent 通知游戏服撤销匹配在线玩家的认证并踢出，不代表中心维护玩家会话
+   * 消息不包含密码、凭据或令牌；重复通知仅对处理时仍在线的匹配玩家生效
+   * </pre>
+   *
+   * Protobuf type {@code realmmesh.auth.v1.AccountEvent}
+   */
+  public static final class AccountEvent extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:realmmesh.auth.v1.AccountEvent)
+      AccountEventOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 36,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "AccountEvent");
+    }
+    // Use AccountEvent.newBuilder() to construct.
+    private AccountEvent(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private AccountEvent() {
+      playerName_ = "";
+      reason_ = 0;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_AccountEvent_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_AccountEvent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_AccountEvent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              realmmesh.auth.v1.Auth.AccountEvent.class, realmmesh.auth.v1.Auth.AccountEvent.Builder.class);
+    }
+
+    public static final int PLAYER_NAME_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object playerName_ = "";
+    /**
+     * <pre>
+     * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The playerName.
+     */
+    @java.lang.Override
+    public java.lang.String getPlayerName() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        playerName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The bytes for playerName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlayerNameBytes() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        playerName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REASON_FIELD_NUMBER = 2;
+    private int reason_ = 0;
+    /**
+     * <pre>
+     * 已提交的账户变更原因，不用于撤销 HTTP JWT
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+     * @return The enum numeric value on the wire for reason.
+     */
+    @java.lang.Override public int getReasonValue() {
+      return reason_;
+    }
+    /**
+     * <pre>
+     * 已提交的账户变更原因，不用于撤销 HTTP JWT
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+     * @return The reason.
+     */
+    @java.lang.Override public realmmesh.auth.v1.Auth.AccountEventReason getReason() {
+      realmmesh.auth.v1.Auth.AccountEventReason result = realmmesh.auth.v1.Auth.AccountEventReason.forNumber(reason_);
+      return result == null ? realmmesh.auth.v1.Auth.AccountEventReason.UNRECOGNIZED : result;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(playerName_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, playerName_);
+      }
+      if (reason_ != realmmesh.auth.v1.Auth.AccountEventReason.ACCOUNT_EVENT_REASON_UNSPECIFIED.getNumber()) {
+        output.writeEnum(2, reason_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(playerName_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, playerName_);
+      }
+      if (reason_ != realmmesh.auth.v1.Auth.AccountEventReason.ACCOUNT_EVENT_REASON_UNSPECIFIED.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, reason_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof realmmesh.auth.v1.Auth.AccountEvent)) {
+        return super.equals(obj);
+      }
+      realmmesh.auth.v1.Auth.AccountEvent other = (realmmesh.auth.v1.Auth.AccountEvent) obj;
+
+      if (!getPlayerName()
+          .equals(other.getPlayerName())) return false;
+      if (reason_ != other.reason_) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLAYER_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getPlayerName().hashCode();
+      hash = (37 * hash) + REASON_FIELD_NUMBER;
+      hash = (53 * hash) + reason_;
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static realmmesh.auth.v1.Auth.AccountEvent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static realmmesh.auth.v1.Auth.AccountEvent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.AccountEvent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(realmmesh.auth.v1.Auth.AccountEvent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * AccountEvent 通知游戏服撤销匹配在线玩家的认证并踢出，不代表中心维护玩家会话
+     * 消息不包含密码、凭据或令牌；重复通知仅对处理时仍在线的匹配玩家生效
+     * </pre>
+     *
+     * Protobuf type {@code realmmesh.auth.v1.AccountEvent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:realmmesh.auth.v1.AccountEvent)
+        realmmesh.auth.v1.Auth.AccountEventOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_AccountEvent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_AccountEvent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                realmmesh.auth.v1.Auth.AccountEvent.class, realmmesh.auth.v1.Auth.AccountEvent.Builder.class);
+      }
+
+      // Construct using realmmesh.auth.v1.Auth.AccountEvent.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        playerName_ = "";
+        reason_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_AccountEvent_descriptor;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.AccountEvent getDefaultInstanceForType() {
+        return realmmesh.auth.v1.Auth.AccountEvent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.AccountEvent build() {
+        realmmesh.auth.v1.Auth.AccountEvent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.AccountEvent buildPartial() {
+        realmmesh.auth.v1.Auth.AccountEvent result = new realmmesh.auth.v1.Auth.AccountEvent(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(realmmesh.auth.v1.Auth.AccountEvent result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.playerName_ = playerName_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.reason_ = reason_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof realmmesh.auth.v1.Auth.AccountEvent) {
+          return mergeFrom((realmmesh.auth.v1.Auth.AccountEvent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(realmmesh.auth.v1.Auth.AccountEvent other) {
+        if (other == realmmesh.auth.v1.Auth.AccountEvent.getDefaultInstance()) return this;
+        if (!other.getPlayerName().isEmpty()) {
+          playerName_ = other.playerName_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.reason_ != 0) {
+          setReasonValue(other.getReasonValue());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        java.util.Objects.requireNonNull(extensionRegistry);
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                playerName_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                reason_ = input.readEnum();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object playerName_ = "";
+      /**
+       * <pre>
+       * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @return The playerName.
+       */
+      public java.lang.String getPlayerName() {
+        java.lang.Object ref = playerName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          playerName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @return The bytes for playerName.
+       */
+      public com.google.protobuf.ByteString
+          getPlayerNameBytes() {
+        java.lang.Object ref = playerName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          playerName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @param value The playerName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerName(
+          java.lang.String value) {
+        java.util.Objects.requireNonNull(value);
+        playerName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerName() {
+        playerName_ = getDefaultInstance().getPlayerName();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 账户保存的原始大小写名字，游戏服按 ASCII 忽略大小写匹配在线玩家
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @param value The bytes for playerName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerNameBytes(
+          com.google.protobuf.ByteString value) {
+        java.util.Objects.requireNonNull(value);
+        checkByteStringIsUtf8(value);
+        playerName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private int reason_ = 0;
+      /**
+       * <pre>
+       * 已提交的账户变更原因，不用于撤销 HTTP JWT
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+       * @return The enum numeric value on the wire for reason.
+       */
+      @java.lang.Override public int getReasonValue() {
+        return reason_;
+      }
+      /**
+       * <pre>
+       * 已提交的账户变更原因，不用于撤销 HTTP JWT
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+       * @param value The enum numeric value on the wire for reason to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReasonValue(int value) {
+        reason_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已提交的账户变更原因，不用于撤销 HTTP JWT
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+       * @return The reason.
+       */
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.AccountEventReason getReason() {
+        realmmesh.auth.v1.Auth.AccountEventReason result = realmmesh.auth.v1.Auth.AccountEventReason.forNumber(reason_);
+        return result == null ? realmmesh.auth.v1.Auth.AccountEventReason.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * 已提交的账户变更原因，不用于撤销 HTTP JWT
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+       * @param value The reason to set.
+       * @throws IllegalArgumentException if UNRECOGNIZED is provided.
+       * @return This builder for chaining.
+       */
+      public Builder setReason(realmmesh.auth.v1.Auth.AccountEventReason value) {
+        java.util.Objects.requireNonNull(value);
+        bitField0_ |= 0x00000002;
+        reason_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已提交的账户变更原因，不用于撤销 HTTP JWT
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.AccountEventReason reason = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReason() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        reason_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:realmmesh.auth.v1.AccountEvent)
+    }
+
+    // @@protoc_insertion_point(class_scope:realmmesh.auth.v1.AccountEvent)
+    private static final realmmesh.auth.v1.Auth.AccountEvent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new realmmesh.auth.v1.Auth.AccountEvent();
+    }
+
+    public static realmmesh.auth.v1.Auth.AccountEvent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<AccountEvent>
+        PARSER = new com.google.protobuf.AbstractParser<AccountEvent>() {
+      @java.lang.Override
+      public AccountEvent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<AccountEvent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<AccountEvent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public realmmesh.auth.v1.Auth.AccountEvent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
   public interface RegisterRequestOrBuilder extends
@@ -3724,6 +5137,2021 @@ public final class Auth extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface ChangePasswordRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:realmmesh.auth.v1.ChangePasswordRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The playerName.
+     */
+    java.lang.String getPlayerName();
+    /**
+     * <pre>
+     * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The bytes for playerName.
+     */
+    com.google.protobuf.ByteString
+        getPlayerNameBytes();
+
+    /**
+     * <pre>
+     * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+     * </pre>
+     *
+     * <code>string old_password = 2;</code>
+     * @return The oldPassword.
+     */
+    java.lang.String getOldPassword();
+    /**
+     * <pre>
+     * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+     * </pre>
+     *
+     * <code>string old_password = 2;</code>
+     * @return The bytes for oldPassword.
+     */
+    com.google.protobuf.ByteString
+        getOldPasswordBytes();
+
+    /**
+     * <pre>
+     * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+     * </pre>
+     *
+     * <code>string new_password = 3;</code>
+     * @return The newPassword.
+     */
+    java.lang.String getNewPassword();
+    /**
+     * <pre>
+     * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+     * </pre>
+     *
+     * <code>string new_password = 3;</code>
+     * @return The bytes for newPassword.
+     */
+    com.google.protobuf.ByteString
+        getNewPasswordBytes();
+  }
+  /**
+   * <pre>
+   * ChangePasswordRequest 为当前已登录连接自助改密，不支持指定其他账户或管理员重置
+   * 游戏服先确认两次新密码一致，中心独立验证新密码格式及旧密码
+   * </pre>
+   *
+   * Protobuf type {@code realmmesh.auth.v1.ChangePasswordRequest}
+   */
+  public static final class ChangePasswordRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:realmmesh.auth.v1.ChangePasswordRequest)
+      ChangePasswordRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 36,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "ChangePasswordRequest");
+    }
+    // Use ChangePasswordRequest.newBuilder() to construct.
+    private ChangePasswordRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private ChangePasswordRequest() {
+      playerName_ = "";
+      oldPassword_ = "";
+      newPassword_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              realmmesh.auth.v1.Auth.ChangePasswordRequest.class, realmmesh.auth.v1.Auth.ChangePasswordRequest.Builder.class);
+    }
+
+    public static final int PLAYER_NAME_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object playerName_ = "";
+    /**
+     * <pre>
+     * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The playerName.
+     */
+    @java.lang.Override
+    public java.lang.String getPlayerName() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        playerName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+     * </pre>
+     *
+     * <code>string player_name = 1;</code>
+     * @return The bytes for playerName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlayerNameBytes() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        playerName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OLD_PASSWORD_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object oldPassword_ = "";
+    /**
+     * <pre>
+     * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+     * </pre>
+     *
+     * <code>string old_password = 2;</code>
+     * @return The oldPassword.
+     */
+    @java.lang.Override
+    public java.lang.String getOldPassword() {
+      java.lang.Object ref = oldPassword_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        oldPassword_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+     * </pre>
+     *
+     * <code>string old_password = 2;</code>
+     * @return The bytes for oldPassword.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOldPasswordBytes() {
+      java.lang.Object ref = oldPassword_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        oldPassword_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NEW_PASSWORD_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object newPassword_ = "";
+    /**
+     * <pre>
+     * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+     * </pre>
+     *
+     * <code>string new_password = 3;</code>
+     * @return The newPassword.
+     */
+    @java.lang.Override
+    public java.lang.String getNewPassword() {
+      java.lang.Object ref = newPassword_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        newPassword_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+     * </pre>
+     *
+     * <code>string new_password = 3;</code>
+     * @return The bytes for newPassword.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNewPasswordBytes() {
+      java.lang.Object ref = newPassword_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        newPassword_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(playerName_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, playerName_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(oldPassword_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, oldPassword_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(newPassword_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, newPassword_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(playerName_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, playerName_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(oldPassword_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, oldPassword_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(newPassword_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, newPassword_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof realmmesh.auth.v1.Auth.ChangePasswordRequest)) {
+        return super.equals(obj);
+      }
+      realmmesh.auth.v1.Auth.ChangePasswordRequest other = (realmmesh.auth.v1.Auth.ChangePasswordRequest) obj;
+
+      if (!getPlayerName()
+          .equals(other.getPlayerName())) return false;
+      if (!getOldPassword()
+          .equals(other.getOldPassword())) return false;
+      if (!getNewPassword()
+          .equals(other.getNewPassword())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLAYER_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getPlayerName().hashCode();
+      hash = (37 * hash) + OLD_PASSWORD_FIELD_NUMBER;
+      hash = (53 * hash) + getOldPassword().hashCode();
+      hash = (37 * hash) + NEW_PASSWORD_FIELD_NUMBER;
+      hash = (53 * hash) + getNewPassword().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(realmmesh.auth.v1.Auth.ChangePasswordRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * ChangePasswordRequest 为当前已登录连接自助改密，不支持指定其他账户或管理员重置
+     * 游戏服先确认两次新密码一致，中心独立验证新密码格式及旧密码
+     * </pre>
+     *
+     * Protobuf type {@code realmmesh.auth.v1.ChangePasswordRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:realmmesh.auth.v1.ChangePasswordRequest)
+        realmmesh.auth.v1.Auth.ChangePasswordRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                realmmesh.auth.v1.Auth.ChangePasswordRequest.class, realmmesh.auth.v1.Auth.ChangePasswordRequest.Builder.class);
+      }
+
+      // Construct using realmmesh.auth.v1.Auth.ChangePasswordRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        playerName_ = "";
+        oldPassword_ = "";
+        newPassword_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.ChangePasswordRequest getDefaultInstanceForType() {
+        return realmmesh.auth.v1.Auth.ChangePasswordRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.ChangePasswordRequest build() {
+        realmmesh.auth.v1.Auth.ChangePasswordRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.ChangePasswordRequest buildPartial() {
+        realmmesh.auth.v1.Auth.ChangePasswordRequest result = new realmmesh.auth.v1.Auth.ChangePasswordRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(realmmesh.auth.v1.Auth.ChangePasswordRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.playerName_ = playerName_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.oldPassword_ = oldPassword_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.newPassword_ = newPassword_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof realmmesh.auth.v1.Auth.ChangePasswordRequest) {
+          return mergeFrom((realmmesh.auth.v1.Auth.ChangePasswordRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(realmmesh.auth.v1.Auth.ChangePasswordRequest other) {
+        if (other == realmmesh.auth.v1.Auth.ChangePasswordRequest.getDefaultInstance()) return this;
+        if (!other.getPlayerName().isEmpty()) {
+          playerName_ = other.playerName_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getOldPassword().isEmpty()) {
+          oldPassword_ = other.oldPassword_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getNewPassword().isEmpty()) {
+          newPassword_ = other.newPassword_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        java.util.Objects.requireNonNull(extensionRegistry);
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                playerName_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                oldPassword_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                newPassword_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object playerName_ = "";
+      /**
+       * <pre>
+       * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @return The playerName.
+       */
+      public java.lang.String getPlayerName() {
+        java.lang.Object ref = playerName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          playerName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @return The bytes for playerName.
+       */
+      public com.google.protobuf.ByteString
+          getPlayerNameBytes() {
+        java.lang.Object ref = playerName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          playerName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @param value The playerName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerName(
+          java.lang.String value) {
+        java.util.Objects.requireNonNull(value);
+        playerName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerName() {
+        playerName_ = getDefaultInstance().getPlayerName();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前真实连接的玩家名字，规则与登录一致，不接受客户端指定其他主体
+       * </pre>
+       *
+       * <code>string player_name = 1;</code>
+       * @param value The bytes for playerName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerNameBytes(
+          com.google.protobuf.ByteString value) {
+        java.util.Objects.requireNonNull(value);
+        checkByteStringIsUtf8(value);
+        playerName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object oldPassword_ = "";
+      /**
+       * <pre>
+       * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+       * </pre>
+       *
+       * <code>string old_password = 2;</code>
+       * @return The oldPassword.
+       */
+      public java.lang.String getOldPassword() {
+        java.lang.Object ref = oldPassword_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          oldPassword_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+       * </pre>
+       *
+       * <code>string old_password = 2;</code>
+       * @return The bytes for oldPassword.
+       */
+      public com.google.protobuf.ByteString
+          getOldPasswordBytes() {
+        java.lang.Object ref = oldPassword_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          oldPassword_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+       * </pre>
+       *
+       * <code>string old_password = 2;</code>
+       * @param value The oldPassword to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldPassword(
+          java.lang.String value) {
+        java.util.Objects.requireNonNull(value);
+        oldPassword_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+       * </pre>
+       *
+       * <code>string old_password = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOldPassword() {
+        oldPassword_ = getDefaultInstance().getOldPassword();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 原始旧密码；非休息账户提交格式错误的旧密码也计为失败
+       * </pre>
+       *
+       * <code>string old_password = 2;</code>
+       * @param value The bytes for oldPassword to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldPasswordBytes(
+          com.google.protobuf.ByteString value) {
+        java.util.Objects.requireNonNull(value);
+        checkByteStringIsUtf8(value);
+        oldPassword_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object newPassword_ = "";
+      /**
+       * <pre>
+       * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+       * </pre>
+       *
+       * <code>string new_password = 3;</code>
+       * @return The newPassword.
+       */
+      public java.lang.String getNewPassword() {
+        java.lang.Object ref = newPassword_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          newPassword_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+       * </pre>
+       *
+       * <code>string new_password = 3;</code>
+       * @return The bytes for newPassword.
+       */
+      public com.google.protobuf.ByteString
+          getNewPasswordBytes() {
+        java.lang.Object ref = newPassword_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          newPassword_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+       * </pre>
+       *
+       * <code>string new_password = 3;</code>
+       * @param value The newPassword to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewPassword(
+          java.lang.String value) {
+        java.util.Objects.requireNonNull(value);
+        newPassword_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+       * </pre>
+       *
+       * <code>string new_password = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNewPassword() {
+        newPassword_ = getDefaultInstance().getNewPassword();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 原始新密码，规则与注册一致；格式错误不计失败次数，不保存到游戏服
+       * </pre>
+       *
+       * <code>string new_password = 3;</code>
+       * @param value The bytes for newPassword to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewPasswordBytes(
+          com.google.protobuf.ByteString value) {
+        java.util.Objects.requireNonNull(value);
+        checkByteStringIsUtf8(value);
+        newPassword_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:realmmesh.auth.v1.ChangePasswordRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:realmmesh.auth.v1.ChangePasswordRequest)
+    private static final realmmesh.auth.v1.Auth.ChangePasswordRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new realmmesh.auth.v1.Auth.ChangePasswordRequest();
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ChangePasswordRequest>
+        PARSER = new com.google.protobuf.AbstractParser<ChangePasswordRequest>() {
+      @java.lang.Override
+      public ChangePasswordRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ChangePasswordRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ChangePasswordRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public realmmesh.auth.v1.Auth.ChangePasswordRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ChangePasswordResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:realmmesh.auth.v1.ChangePasswordResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 本次改密的业务结果
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    int getStatusValue();
+    /**
+     * <pre>
+     * 本次改密的业务结果
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+     * @return The status.
+     */
+    realmmesh.auth.v1.Auth.ChangePasswordStatus getStatus();
+
+    /**
+     * <pre>
+     * WRONG_PASSWORD 时为触发休息前剩余次数，SUCCEEDED 时为清零后的失败阈值
+     * 其余状态为 0，与登录读取和修改同一份持久化失败状态
+     * </pre>
+     *
+     * <code>int64 remaining_attempts = 2;</code>
+     * @return The remainingAttempts.
+     */
+    long getRemainingAttempts();
+
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+     * @return Whether the cooldownUntil field is set.
+     */
+    boolean hasCooldownUntil();
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+     * @return The cooldownUntil.
+     */
+    com.google.protobuf.Timestamp getCooldownUntil();
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+     */
+    com.google.protobuf.TimestampOrBuilder getCooldownUntilOrBuilder();
+
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时为正数，中心向上取整的剩余秒数，仅供提示
+     * </pre>
+     *
+     * <code>int64 retry_after_seconds = 4;</code>
+     * @return The retryAfterSeconds.
+     */
+    long getRetryAfterSeconds();
+
+    /**
+     * <pre>
+     * SUCCEEDED、UNREGISTERED 和 COOLING_DOWN 时为 true，每次收到均处理本次连接
+     * WRONG_PASSWORD 时为 false；踢出文案由 status 决定
+     * </pre>
+     *
+     * <code>bool kick = 5;</code>
+     * @return The kick.
+     */
+    boolean getKick();
+  }
+  /**
+   * <pre>
+   * ChangePasswordResponse 在密码变更或失败状态提交成功后返回，不授予登录状态
+   * 成功响应与账户变更通知可能先后到达，两者均要求清除认证并退出
+   * </pre>
+   *
+   * Protobuf type {@code realmmesh.auth.v1.ChangePasswordResponse}
+   */
+  public static final class ChangePasswordResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:realmmesh.auth.v1.ChangePasswordResponse)
+      ChangePasswordResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 36,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "ChangePasswordResponse");
+    }
+    // Use ChangePasswordResponse.newBuilder() to construct.
+    private ChangePasswordResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private ChangePasswordResponse() {
+      status_ = 0;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              realmmesh.auth.v1.Auth.ChangePasswordResponse.class, realmmesh.auth.v1.Auth.ChangePasswordResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int STATUS_FIELD_NUMBER = 1;
+    private int status_ = 0;
+    /**
+     * <pre>
+     * 本次改密的业务结果
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    @java.lang.Override public int getStatusValue() {
+      return status_;
+    }
+    /**
+     * <pre>
+     * 本次改密的业务结果
+     * </pre>
+     *
+     * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+     * @return The status.
+     */
+    @java.lang.Override public realmmesh.auth.v1.Auth.ChangePasswordStatus getStatus() {
+      realmmesh.auth.v1.Auth.ChangePasswordStatus result = realmmesh.auth.v1.Auth.ChangePasswordStatus.forNumber(status_);
+      return result == null ? realmmesh.auth.v1.Auth.ChangePasswordStatus.UNRECOGNIZED : result;
+    }
+
+    public static final int REMAINING_ATTEMPTS_FIELD_NUMBER = 2;
+    private long remainingAttempts_ = 0L;
+    /**
+     * <pre>
+     * WRONG_PASSWORD 时为触发休息前剩余次数，SUCCEEDED 时为清零后的失败阈值
+     * 其余状态为 0，与登录读取和修改同一份持久化失败状态
+     * </pre>
+     *
+     * <code>int64 remaining_attempts = 2;</code>
+     * @return The remainingAttempts.
+     */
+    @java.lang.Override
+    public long getRemainingAttempts() {
+      return remainingAttempts_;
+    }
+
+    public static final int COOLDOWN_UNTIL_FIELD_NUMBER = 3;
+    private com.google.protobuf.Timestamp cooldownUntil_;
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+     * @return Whether the cooldownUntil field is set.
+     */
+    @java.lang.Override
+    public boolean hasCooldownUntil() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+     * @return The cooldownUntil.
+     */
+    @java.lang.Override
+    public com.google.protobuf.Timestamp getCooldownUntil() {
+      return cooldownUntil_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : cooldownUntil_;
+    }
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+     */
+    @java.lang.Override
+    public com.google.protobuf.TimestampOrBuilder getCooldownUntilOrBuilder() {
+      return cooldownUntil_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : cooldownUntil_;
+    }
+
+    public static final int RETRY_AFTER_SECONDS_FIELD_NUMBER = 4;
+    private long retryAfterSeconds_ = 0L;
+    /**
+     * <pre>
+     * 仅 COOLING_DOWN 时为正数，中心向上取整的剩余秒数，仅供提示
+     * </pre>
+     *
+     * <code>int64 retry_after_seconds = 4;</code>
+     * @return The retryAfterSeconds.
+     */
+    @java.lang.Override
+    public long getRetryAfterSeconds() {
+      return retryAfterSeconds_;
+    }
+
+    public static final int KICK_FIELD_NUMBER = 5;
+    private boolean kick_ = false;
+    /**
+     * <pre>
+     * SUCCEEDED、UNREGISTERED 和 COOLING_DOWN 时为 true，每次收到均处理本次连接
+     * WRONG_PASSWORD 时为 false；踢出文案由 status 决定
+     * </pre>
+     *
+     * <code>bool kick = 5;</code>
+     * @return The kick.
+     */
+    @java.lang.Override
+    public boolean getKick() {
+      return kick_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (status_ != realmmesh.auth.v1.Auth.ChangePasswordStatus.CHANGE_PASSWORD_STATUS_UNSPECIFIED.getNumber()) {
+        output.writeEnum(1, status_);
+      }
+      if (remainingAttempts_ != 0L) {
+        output.writeInt64(2, remainingAttempts_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(3, getCooldownUntil());
+      }
+      if (retryAfterSeconds_ != 0L) {
+        output.writeInt64(4, retryAfterSeconds_);
+      }
+      if (kick_ != false) {
+        output.writeBool(5, kick_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (status_ != realmmesh.auth.v1.Auth.ChangePasswordStatus.CHANGE_PASSWORD_STATUS_UNSPECIFIED.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, status_);
+      }
+      if (remainingAttempts_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, remainingAttempts_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getCooldownUntil());
+      }
+      if (retryAfterSeconds_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, retryAfterSeconds_);
+      }
+      if (kick_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, kick_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof realmmesh.auth.v1.Auth.ChangePasswordResponse)) {
+        return super.equals(obj);
+      }
+      realmmesh.auth.v1.Auth.ChangePasswordResponse other = (realmmesh.auth.v1.Auth.ChangePasswordResponse) obj;
+
+      if (status_ != other.status_) return false;
+      if (getRemainingAttempts()
+          != other.getRemainingAttempts()) return false;
+      if (hasCooldownUntil() != other.hasCooldownUntil()) return false;
+      if (hasCooldownUntil()) {
+        if (!getCooldownUntil()
+            .equals(other.getCooldownUntil())) return false;
+      }
+      if (getRetryAfterSeconds()
+          != other.getRetryAfterSeconds()) return false;
+      if (getKick()
+          != other.getKick()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + status_;
+      hash = (37 * hash) + REMAINING_ATTEMPTS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRemainingAttempts());
+      if (hasCooldownUntil()) {
+        hash = (37 * hash) + COOLDOWN_UNTIL_FIELD_NUMBER;
+        hash = (53 * hash) + getCooldownUntil().hashCode();
+      }
+      hash = (37 * hash) + RETRY_AFTER_SECONDS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRetryAfterSeconds());
+      hash = (37 * hash) + KICK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getKick());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(realmmesh.auth.v1.Auth.ChangePasswordResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * ChangePasswordResponse 在密码变更或失败状态提交成功后返回，不授予登录状态
+     * 成功响应与账户变更通知可能先后到达，两者均要求清除认证并退出
+     * </pre>
+     *
+     * Protobuf type {@code realmmesh.auth.v1.ChangePasswordResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:realmmesh.auth.v1.ChangePasswordResponse)
+        realmmesh.auth.v1.Auth.ChangePasswordResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                realmmesh.auth.v1.Auth.ChangePasswordResponse.class, realmmesh.auth.v1.Auth.ChangePasswordResponse.Builder.class);
+      }
+
+      // Construct using realmmesh.auth.v1.Auth.ChangePasswordResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetCooldownUntilFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        status_ = 0;
+        remainingAttempts_ = 0L;
+        cooldownUntil_ = null;
+        if (cooldownUntilBuilder_ != null) {
+          cooldownUntilBuilder_.dispose();
+          cooldownUntilBuilder_ = null;
+        }
+        retryAfterSeconds_ = 0L;
+        kick_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return realmmesh.auth.v1.Auth.internal_static_realmmesh_auth_v1_ChangePasswordResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.ChangePasswordResponse getDefaultInstanceForType() {
+        return realmmesh.auth.v1.Auth.ChangePasswordResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.ChangePasswordResponse build() {
+        realmmesh.auth.v1.Auth.ChangePasswordResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.ChangePasswordResponse buildPartial() {
+        realmmesh.auth.v1.Auth.ChangePasswordResponse result = new realmmesh.auth.v1.Auth.ChangePasswordResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(realmmesh.auth.v1.Auth.ChangePasswordResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.status_ = status_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.remainingAttempts_ = remainingAttempts_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.cooldownUntil_ = cooldownUntilBuilder_ == null
+              ? cooldownUntil_
+              : cooldownUntilBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.retryAfterSeconds_ = retryAfterSeconds_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.kick_ = kick_;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof realmmesh.auth.v1.Auth.ChangePasswordResponse) {
+          return mergeFrom((realmmesh.auth.v1.Auth.ChangePasswordResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(realmmesh.auth.v1.Auth.ChangePasswordResponse other) {
+        if (other == realmmesh.auth.v1.Auth.ChangePasswordResponse.getDefaultInstance()) return this;
+        if (other.status_ != 0) {
+          setStatusValue(other.getStatusValue());
+        }
+        if (other.getRemainingAttempts() != 0L) {
+          setRemainingAttempts(other.getRemainingAttempts());
+        }
+        if (other.hasCooldownUntil()) {
+          mergeCooldownUntil(other.getCooldownUntil());
+        }
+        if (other.getRetryAfterSeconds() != 0L) {
+          setRetryAfterSeconds(other.getRetryAfterSeconds());
+        }
+        if (other.getKick() != false) {
+          setKick(other.getKick());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        java.util.Objects.requireNonNull(extensionRegistry);
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                status_ = input.readEnum();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                remainingAttempts_ = input.readInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                input.readMessage(
+                    internalGetCooldownUntilFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 32: {
+                retryAfterSeconds_ = input.readInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                kick_ = input.readBool();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int status_ = 0;
+      /**
+       * <pre>
+       * 本次改密的业务结果
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+       * @return The enum numeric value on the wire for status.
+       */
+      @java.lang.Override public int getStatusValue() {
+        return status_;
+      }
+      /**
+       * <pre>
+       * 本次改密的业务结果
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+       * @param value The enum numeric value on the wire for status to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStatusValue(int value) {
+        status_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 本次改密的业务结果
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+       * @return The status.
+       */
+      @java.lang.Override
+      public realmmesh.auth.v1.Auth.ChangePasswordStatus getStatus() {
+        realmmesh.auth.v1.Auth.ChangePasswordStatus result = realmmesh.auth.v1.Auth.ChangePasswordStatus.forNumber(status_);
+        return result == null ? realmmesh.auth.v1.Auth.ChangePasswordStatus.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * 本次改密的业务结果
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+       * @param value The status to set.
+       * @throws IllegalArgumentException if UNRECOGNIZED is provided.
+       * @return This builder for chaining.
+       */
+      public Builder setStatus(realmmesh.auth.v1.Auth.ChangePasswordStatus value) {
+        java.util.Objects.requireNonNull(value);
+        bitField0_ |= 0x00000001;
+        status_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 本次改密的业务结果
+       * </pre>
+       *
+       * <code>.realmmesh.auth.v1.ChangePasswordStatus status = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStatus() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        status_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long remainingAttempts_ ;
+      /**
+       * <pre>
+       * WRONG_PASSWORD 时为触发休息前剩余次数，SUCCEEDED 时为清零后的失败阈值
+       * 其余状态为 0，与登录读取和修改同一份持久化失败状态
+       * </pre>
+       *
+       * <code>int64 remaining_attempts = 2;</code>
+       * @return The remainingAttempts.
+       */
+      @java.lang.Override
+      public long getRemainingAttempts() {
+        return remainingAttempts_;
+      }
+      /**
+       * <pre>
+       * WRONG_PASSWORD 时为触发休息前剩余次数，SUCCEEDED 时为清零后的失败阈值
+       * 其余状态为 0，与登录读取和修改同一份持久化失败状态
+       * </pre>
+       *
+       * <code>int64 remaining_attempts = 2;</code>
+       * @param value The remainingAttempts to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRemainingAttempts(long value) {
+
+        remainingAttempts_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * WRONG_PASSWORD 时为触发休息前剩余次数，SUCCEEDED 时为清零后的失败阈值
+       * 其余状态为 0，与登录读取和修改同一份持久化失败状态
+       * </pre>
+       *
+       * <code>int64 remaining_attempts = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRemainingAttempts() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        remainingAttempts_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Timestamp cooldownUntil_;
+      private com.google.protobuf.SingleFieldBuilder<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> cooldownUntilBuilder_;
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       * @return Whether the cooldownUntil field is set.
+       */
+      public boolean hasCooldownUntil() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       * @return The cooldownUntil.
+       */
+      public com.google.protobuf.Timestamp getCooldownUntil() {
+        if (cooldownUntilBuilder_ == null) {
+          return cooldownUntil_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : cooldownUntil_;
+        } else {
+          return cooldownUntilBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       */
+      public Builder setCooldownUntil(com.google.protobuf.Timestamp value) {
+        if (cooldownUntilBuilder_ == null) {
+          java.util.Objects.requireNonNull(value);
+          cooldownUntil_ = value;
+        } else {
+          cooldownUntilBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       */
+      public Builder setCooldownUntil(
+          com.google.protobuf.Timestamp.Builder builderForValue) {
+        if (cooldownUntilBuilder_ == null) {
+          cooldownUntil_ = builderForValue.build();
+        } else {
+          cooldownUntilBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       */
+      public Builder mergeCooldownUntil(com.google.protobuf.Timestamp value) {
+        if (cooldownUntilBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            cooldownUntil_ != null &&
+            cooldownUntil_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+            getCooldownUntilBuilder().mergeFrom(value);
+          } else {
+            cooldownUntil_ = value;
+          }
+        } else {
+          cooldownUntilBuilder_.mergeFrom(value);
+        }
+        if (cooldownUntil_ != null) {
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       */
+      public Builder clearCooldownUntil() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        cooldownUntil_ = null;
+        if (cooldownUntilBuilder_ != null) {
+          cooldownUntilBuilder_.dispose();
+          cooldownUntilBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       */
+      public com.google.protobuf.Timestamp.Builder getCooldownUntilBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return internalGetCooldownUntilFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       */
+      public com.google.protobuf.TimestampOrBuilder getCooldownUntilOrBuilder() {
+        if (cooldownUntilBuilder_ != null) {
+          return cooldownUntilBuilder_.getMessageOrBuilder();
+        } else {
+          return cooldownUntil_ == null ?
+              com.google.protobuf.Timestamp.getDefaultInstance() : cooldownUntil_;
+        }
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时设置，沿用中心绝对截止时刻，再次请求不延长
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp cooldown_until = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+          internalGetCooldownUntilFieldBuilder() {
+        if (cooldownUntilBuilder_ == null) {
+          cooldownUntilBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                  getCooldownUntil(),
+                  getParentForChildren(),
+                  isClean());
+          cooldownUntil_ = null;
+        }
+        return cooldownUntilBuilder_;
+      }
+
+      private long retryAfterSeconds_ ;
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时为正数，中心向上取整的剩余秒数，仅供提示
+       * </pre>
+       *
+       * <code>int64 retry_after_seconds = 4;</code>
+       * @return The retryAfterSeconds.
+       */
+      @java.lang.Override
+      public long getRetryAfterSeconds() {
+        return retryAfterSeconds_;
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时为正数，中心向上取整的剩余秒数，仅供提示
+       * </pre>
+       *
+       * <code>int64 retry_after_seconds = 4;</code>
+       * @param value The retryAfterSeconds to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetryAfterSeconds(long value) {
+
+        retryAfterSeconds_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 仅 COOLING_DOWN 时为正数，中心向上取整的剩余秒数，仅供提示
+       * </pre>
+       *
+       * <code>int64 retry_after_seconds = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRetryAfterSeconds() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        retryAfterSeconds_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private boolean kick_ ;
+      /**
+       * <pre>
+       * SUCCEEDED、UNREGISTERED 和 COOLING_DOWN 时为 true，每次收到均处理本次连接
+       * WRONG_PASSWORD 时为 false；踢出文案由 status 决定
+       * </pre>
+       *
+       * <code>bool kick = 5;</code>
+       * @return The kick.
+       */
+      @java.lang.Override
+      public boolean getKick() {
+        return kick_;
+      }
+      /**
+       * <pre>
+       * SUCCEEDED、UNREGISTERED 和 COOLING_DOWN 时为 true，每次收到均处理本次连接
+       * WRONG_PASSWORD 时为 false；踢出文案由 status 决定
+       * </pre>
+       *
+       * <code>bool kick = 5;</code>
+       * @param value The kick to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKick(boolean value) {
+
+        kick_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * SUCCEEDED、UNREGISTERED 和 COOLING_DOWN 时为 true，每次收到均处理本次连接
+       * WRONG_PASSWORD 时为 false；踢出文案由 status 决定
+       * </pre>
+       *
+       * <code>bool kick = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKick() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        kick_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:realmmesh.auth.v1.ChangePasswordResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:realmmesh.auth.v1.ChangePasswordResponse)
+    private static final realmmesh.auth.v1.Auth.ChangePasswordResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new realmmesh.auth.v1.Auth.ChangePasswordResponse();
+    }
+
+    public static realmmesh.auth.v1.Auth.ChangePasswordResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ChangePasswordResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ChangePasswordResponse>() {
+      @java.lang.Override
+      public ChangePasswordResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ChangePasswordResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ChangePasswordResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public realmmesh.auth.v1.Auth.ChangePasswordResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_realmmesh_auth_v1_AccountEvent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_realmmesh_auth_v1_AccountEvent_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_realmmesh_auth_v1_RegisterRequest_descriptor;
   private static final 
@@ -3744,6 +7172,16 @@ public final class Auth extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_realmmesh_auth_v1_LoginResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_realmmesh_auth_v1_ChangePasswordRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_realmmesh_auth_v1_ChangePasswordRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_realmmesh_auth_v1_ChangePasswordResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_realmmesh_auth_v1_ChangePasswordResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3754,58 +7192,107 @@ public final class Auth extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\022auth/v1/auth.proto\022\021realmmesh.auth.v1\032" +
-      "\037google/protobuf/timestamp.proto\"8\n\017Regi" +
-      "sterRequest\022\023\n\013player_name\030\001 \001(\t\022\020\n\010pass" +
-      "word\030\002 \001(\t\"8\n\020RegisterResponse\022\017\n\007user_i" +
-      "d\030\001 \001(\003\022\023\n\013player_name\030\002 \001(\t\"5\n\014LoginReq" +
-      "uest\022\023\n\013player_name\030\001 \001(\t\022\020\n\010password\030\002 " +
-      "\001(\t\"\340\001\n\rLoginResponse\022.\n\006status\030\001 \001(\0162\036." +
-      "realmmesh.auth.v1.LoginStatus\022\017\n\007user_id" +
-      "\030\002 \001(\003\022\023\n\013player_name\030\003 \001(\t\022\032\n\022remaining" +
-      "_attempts\030\004 \001(\003\0222\n\016cooldown_until\030\005 \001(\0132" +
-      "\032.google.protobuf.Timestamp\022\033\n\023retry_aft" +
-      "er_seconds\030\006 \001(\003\022\014\n\004kick\030\007 \001(\010*\246\001\n\013Login" +
-      "Status\022\034\n\030LOGIN_STATUS_UNSPECIFIED\020\000\022\032\n\026" +
-      "LOGIN_STATUS_SUCCEEDED\020\001\022\035\n\031LOGIN_STATUS" +
-      "_UNREGISTERED\020\002\022\037\n\033LOGIN_STATUS_WRONG_PA" +
-      "SSWORD\020\003\022\035\n\031LOGIN_STATUS_COOLING_DOWN\020\0042" +
-      "\256\001\n\013AuthService\022S\n\010Register\022\".realmmesh." +
-      "auth.v1.RegisterRequest\032#.realmmesh.auth" +
-      ".v1.RegisterResponse\022J\n\005Login\022\037.realmmes" +
-      "h.auth.v1.LoginRequest\032 .realmmesh.auth." +
-      "v1.LoginResponseB>Z<github.com/helantian" +
-      "shen/realmmesh-server/gen/auth/v1;authv1" +
-      "b\006proto3"
+      "\037google/protobuf/timestamp.proto\"\037\n\035Subs" +
+      "cribeAccountEventsRequest\"Z\n\014AccountEven" +
+      "t\022\023\n\013player_name\030\001 \001(\t\0225\n\006reason\030\002 \001(\0162%" +
+      ".realmmesh.auth.v1.AccountEventReason\"8\n" +
+      "\017RegisterRequest\022\023\n\013player_name\030\001 \001(\t\022\020\n" +
+      "\010password\030\002 \001(\t\"8\n\020RegisterResponse\022\017\n\007u" +
+      "ser_id\030\001 \001(\003\022\023\n\013player_name\030\002 \001(\t\"5\n\014Log" +
+      "inRequest\022\023\n\013player_name\030\001 \001(\t\022\020\n\010passwo" +
+      "rd\030\002 \001(\t\"\340\001\n\rLoginResponse\022.\n\006status\030\001 \001" +
+      "(\0162\036.realmmesh.auth.v1.LoginStatus\022\017\n\007us" +
+      "er_id\030\002 \001(\003\022\023\n\013player_name\030\003 \001(\t\022\032\n\022rema" +
+      "ining_attempts\030\004 \001(\003\0222\n\016cooldown_until\030\005" +
+      " \001(\0132\032.google.protobuf.Timestamp\022\033\n\023retr" +
+      "y_after_seconds\030\006 \001(\003\022\014\n\004kick\030\007 \001(\010\"X\n\025C" +
+      "hangePasswordRequest\022\023\n\013player_name\030\001 \001(" +
+      "\t\022\024\n\014old_password\030\002 \001(\t\022\024\n\014new_password\030" +
+      "\003 \001(\t\"\314\001\n\026ChangePasswordResponse\0227\n\006stat" +
+      "us\030\001 \001(\0162\'.realmmesh.auth.v1.ChangePassw" +
+      "ordStatus\022\032\n\022remaining_attempts\030\002 \001(\003\0222\n" +
+      "\016cooldown_until\030\003 \001(\0132\032.google.protobuf." +
+      "Timestamp\022\033\n\023retry_after_seconds\030\004 \001(\003\022\014" +
+      "\n\004kick\030\005 \001(\010*\217\001\n\022AccountEventReason\022$\n A" +
+      "CCOUNT_EVENT_REASON_UNSPECIFIED\020\000\022)\n%ACC" +
+      "OUNT_EVENT_REASON_PASSWORD_CHANGED\020\001\022(\n$" +
+      "ACCOUNT_EVENT_REASON_ACCOUNT_DELETED\020\002*\246" +
+      "\001\n\013LoginStatus\022\034\n\030LOGIN_STATUS_UNSPECIFI" +
+      "ED\020\000\022\032\n\026LOGIN_STATUS_SUCCEEDED\020\001\022\035\n\031LOGI" +
+      "N_STATUS_UNREGISTERED\020\002\022\037\n\033LOGIN_STATUS_" +
+      "WRONG_PASSWORD\020\003\022\035\n\031LOGIN_STATUS_COOLING" +
+      "_DOWN\020\004*\341\001\n\024ChangePasswordStatus\022&\n\"CHAN" +
+      "GE_PASSWORD_STATUS_UNSPECIFIED\020\000\022$\n CHAN" +
+      "GE_PASSWORD_STATUS_SUCCEEDED\020\001\022\'\n#CHANGE" +
+      "_PASSWORD_STATUS_UNREGISTERED\020\002\022)\n%CHANG" +
+      "E_PASSWORD_STATUS_WRONG_PASSWORD\020\003\022\'\n#CH" +
+      "ANGE_PASSWORD_STATUS_COOLING_DOWN\020\0042\204\003\n\013" +
+      "AuthService\022S\n\010Register\022\".realmmesh.auth" +
+      ".v1.RegisterRequest\032#.realmmesh.auth.v1." +
+      "RegisterResponse\022J\n\005Login\022\037.realmmesh.au" +
+      "th.v1.LoginRequest\032 .realmmesh.auth.v1.L" +
+      "oginResponse\022e\n\016ChangePassword\022(.realmme" +
+      "sh.auth.v1.ChangePasswordRequest\032).realm" +
+      "mesh.auth.v1.ChangePasswordResponse\022m\n\026S" +
+      "ubscribeAccountEvents\0220.realmmesh.auth.v" +
+      "1.SubscribeAccountEventsRequest\032\037.realmm" +
+      "esh.auth.v1.AccountEvent0\001B>Z<github.com" +
+      "/helantianshen/realmmesh-server/gen/auth" +
+      "/v1;authv1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
         });
-    internal_static_realmmesh_auth_v1_RegisterRequest_descriptor =
+    internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_descriptor =
       getDescriptor().getMessageType(0);
+    internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_realmmesh_auth_v1_SubscribeAccountEventsRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_realmmesh_auth_v1_AccountEvent_descriptor =
+      getDescriptor().getMessageType(1);
+    internal_static_realmmesh_auth_v1_AccountEvent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_realmmesh_auth_v1_AccountEvent_descriptor,
+        new java.lang.String[] { "PlayerName", "Reason", });
+    internal_static_realmmesh_auth_v1_RegisterRequest_descriptor =
+      getDescriptor().getMessageType(2);
     internal_static_realmmesh_auth_v1_RegisterRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_realmmesh_auth_v1_RegisterRequest_descriptor,
         new java.lang.String[] { "PlayerName", "Password", });
     internal_static_realmmesh_auth_v1_RegisterResponse_descriptor =
-      getDescriptor().getMessageType(1);
+      getDescriptor().getMessageType(3);
     internal_static_realmmesh_auth_v1_RegisterResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_realmmesh_auth_v1_RegisterResponse_descriptor,
         new java.lang.String[] { "UserId", "PlayerName", });
     internal_static_realmmesh_auth_v1_LoginRequest_descriptor =
-      getDescriptor().getMessageType(2);
+      getDescriptor().getMessageType(4);
     internal_static_realmmesh_auth_v1_LoginRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_realmmesh_auth_v1_LoginRequest_descriptor,
         new java.lang.String[] { "PlayerName", "Password", });
     internal_static_realmmesh_auth_v1_LoginResponse_descriptor =
-      getDescriptor().getMessageType(3);
+      getDescriptor().getMessageType(5);
     internal_static_realmmesh_auth_v1_LoginResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_realmmesh_auth_v1_LoginResponse_descriptor,
         new java.lang.String[] { "Status", "UserId", "PlayerName", "RemainingAttempts", "CooldownUntil", "RetryAfterSeconds", "Kick", });
+    internal_static_realmmesh_auth_v1_ChangePasswordRequest_descriptor =
+      getDescriptor().getMessageType(6);
+    internal_static_realmmesh_auth_v1_ChangePasswordRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_realmmesh_auth_v1_ChangePasswordRequest_descriptor,
+        new java.lang.String[] { "PlayerName", "OldPassword", "NewPassword", });
+    internal_static_realmmesh_auth_v1_ChangePasswordResponse_descriptor =
+      getDescriptor().getMessageType(7);
+    internal_static_realmmesh_auth_v1_ChangePasswordResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_realmmesh_auth_v1_ChangePasswordResponse_descriptor,
+        new java.lang.String[] { "Status", "RemainingAttempts", "CooldownUntil", "RetryAfterSeconds", "Kick", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
   }

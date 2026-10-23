@@ -37,11 +37,12 @@ dependencies {
 sourceSets {
     main {
         proto {
-            srcDir rootProject.file('proto')
+            srcDir rootProject.file(providers.gradleProperty('realmmeshProtoDir').getOrElse('proto'))
             include 'probe/v1/probe.proto'
             include 'auth/v1/auth.proto'
             include 'config/v1/config.proto'
             include 'audit/v1/audit.proto'
+            include 'warehouse/v1/warehouse.proto'
         }
     }
 }

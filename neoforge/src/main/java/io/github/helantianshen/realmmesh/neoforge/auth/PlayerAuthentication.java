@@ -36,6 +36,7 @@ public final class PlayerAuthentication {
     /** 本次连接的认证结果及在途请求，不保存密码或认证请求消息 */
     private static final class ConnectionState {
         private boolean authenticated;
+        private long userId;
         private CompletableFuture<?> pending;
         private final LoginDeadline deadline;
         private Vec3 anchor;
@@ -87,6 +88,12 @@ public final class PlayerAuthentication {
     public static boolean isAuthenticated(ServerPlayer player) {
         var state = stateFor(player);
         return state != null && state.authenticated;
+    }
+
+    /** 取得当前认证连接的中心账户 ID，未认证时返回零 */
+    public static long userId(ServerPlayer player) {
+        var state = stateFor(player);
+        return state != null && state.authenticated ? state.userId : 0;
     }
 
     /**
@@ -141,8 +148,9 @@ public final class PlayerAuthentication {
         reply(player, "请先使用 /realmmesh login 或 /realmmesh register 完成认证");
     }
 
-    /** 成功结果只解除当前连接的门禁，并同步客户端界面状态 */
-    private static void authenticate(ServerPlayer player, ConnectionState state) {
+    /** 成功结果保存中心账户 ID 并解除当前连接门禁，同步客户端界面状态 */
+    private static void authenticate(ServerPlayer player, ConnectionState state, long userId) {
+        state.userId = userId;
         state.authenticated = true;
         AuthStatePayload.send(player, true);
         player.containerMenu.sendAllDataToRemote();
@@ -197,7 +205,7 @@ public final class PlayerAuthentication {
                 return;
             }
 
-            authenticate(player, state);
+            authenticate(player, state, response.getUserId());
             reply(player, "注册成功，已登录");
         });
     }
@@ -323,7 +331,7 @@ public final class PlayerAuthentication {
                     return;
                 }
                 if (response.getStatus() == Auth.LoginStatus.LOGIN_STATUS_SUCCEEDED) {
-                    authenticate(player, state);
+                    authenticate(player, state, response.getUserId());
                     reply(player, "登录成功");
                 } else {
                     reply(player, "密码错误，还可尝试 " + response.getRemainingAttempts() + " 次");
